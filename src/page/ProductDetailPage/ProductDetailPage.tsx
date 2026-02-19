@@ -22,23 +22,13 @@ const ProductDetailPage: React.FC = () => {
   }, [id, dispatch]);
 
   const selectSize = (value: string) => {
-    setSizeError(false);
-    setSize(value);
-    setDropdownOpen(false);
+    // 사이즈 추가하기
   };
 
   const addItemToCart = () => {
-    if (!size) {
-      setSizeError(true);
-      return;
-    }
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-    if (selectedProduct) {
-      dispatch(addToCart({ id: selectedProduct._id, size }));
-    }
+    //사이즈를 아직 선택안했다면 에러
+    // 아직 로그인을 안한유저라면 로그인페이지로
+    // 카트에 아이템 추가하기
   };
 
   if (loading || !selectedProduct) {

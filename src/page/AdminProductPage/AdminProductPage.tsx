@@ -34,27 +34,19 @@ const AdminProductPage = () => {
     "Status",
     "",
   ];
+  //상품리스트 가져오기 (url쿼리 맞춰서)
 
   useEffect(() => {
-    const params: Record<string, string> = {
-      page: String(searchQuery.page),
-    };
-    if (searchQuery.name) {
-      params.name = searchQuery.name;
-    }
-    const queryString = new URLSearchParams(params).toString();
-    navigate("?" + queryString);
-    dispatch(getProductList(searchQuery));
+    //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
   }, [searchQuery]);
 
   const deleteItem = (id: string) => {
-    dispatch(deleteProduct(id));
+    //아이템 삭제하가ㅣ
   };
 
   const openEditForm = (product: Product) => {
-    dispatch(setSelectedProduct(product));
-    setMode("edit");
-    setShowDialog(true);
+    //edit모드로 설정하고
+    // 아이템 수정다이얼로그 열어주기
   };
 
   const handleClickNewItem = () => {
@@ -63,7 +55,7 @@ const AdminProductPage = () => {
   };
 
   const handlePageClick = ({ selected }: { selected: number }) => {
-    setSearchQuery({ ...searchQuery, page: selected + 1 });
+    //  쿼리에 페이지값 바꿔주기
   };
 
   return (

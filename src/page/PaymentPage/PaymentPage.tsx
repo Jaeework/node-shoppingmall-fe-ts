@@ -6,15 +6,6 @@ import PaymentForm from "./component/PaymentForm";
 import { createOrder } from "../../features/order/orderSlice";
 import type { CardValue } from "../../types";
 
-const cc_expires_format = (string: string) => {
-  return string
-    .replace(/[^0-9]/g, "")
-    .replace(/^([2-9])$/g, "0$1")
-    .replace(/^(1{1})([3-9]{1})$/g, "0$1/$2")
-    .replace(/^0{1,}/g, "0")
-    .replace(/^([0-1]{1}[0-9]{1})([0-9]{1,2}).*/g, "$1/$2");
-};
-
 const PaymentPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -38,46 +29,25 @@ const PaymentPage = () => {
   });
 
   useEffect(() => {
-    if (orderNum && orderNum !== "") {
-      navigate("/payment/success");
-    }
+    // 오더번호를 받으면 어디로 갈까?
   }, [orderNum]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // TODO: dispatch createOrder
-    dispatch(
-      createOrder({
-        shipTo: {
-          firstName: shipInfo.firstName,
-          lastName: shipInfo.lastName,
-          address: shipInfo.address,
-          city: shipInfo.city,
-          zip: shipInfo.zip,
-        },
-        contact: {
-          firstName: shipInfo.firstName,
-          lastName: shipInfo.lastName,
-          contact: shipInfo.contact,
-        },
-        totalPrice: 0,
-      })
-    );
+    // 오더 생성하기
   };
 
   const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setShipInfo({ ...shipInfo, [name]: value });
+    //shipInfo에 값 넣어주기
   };
 
   const handlePaymentInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    if (name === "expiry") {
-      setCardValue({ ...cardValue, [name]: cc_expires_format(value) });
-    } else {
-      setCardValue({ ...cardValue, [name]: value });
-    }
+    //카드정보 넣어주기
   };
+
+  // if (cartList?.length === 0) {
+  //   navigate("/cart");
+  // }// 주문할 아이템이 없다면 주문하기로 안넘어가게 막음
 
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     setCardValue({ ...cardValue, focus: e.target.name });

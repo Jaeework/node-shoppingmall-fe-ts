@@ -11,6 +11,11 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({
   uploadImage,
 }) => {
   const widgetRef = useRef<ReturnType<typeof window.cloudinary.createUploadWidget> | null>(null);
+  const uploadImageRef = useRef(uploadImage);
+
+  useEffect(() => {
+    uploadImageRef.current = uploadImage;
+  });
 
   useEffect(() => {
     widgetRef.current = window.cloudinary.createUploadWidget(
@@ -21,11 +26,16 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({
             "uploadedimage"
           ) as HTMLImageElement | null;
           if (imgEl) imgEl.src = result.info.secure_url;
-          uploadImage(result.info.secure_url);
+          uploadImageRef.current(result.info.secure_url);
         }
       }
     );
-  }, [uploadImage]);
+
+    return () => {
+      widgetRef.current?.destroy();
+      widgetRef.current = null;
+    };
+  }, []);
 
   const handleClick = () => {
     widgetRef.current?.open();

@@ -13,58 +13,26 @@ const initialState: OrderState = {
   totalPageNum: 1,
 };
 
-export const createOrder = createAsyncThunk<
-  { orderNum: string },
-  Record<string, unknown>,
-  { rejectValue: string }
->("order/createOrder", async (payload, { rejectWithValue }) => {
-  try {
-    const response = await api.post("/order", payload);
-    return response.data;
-  } catch (error) {
-    return rejectWithValue("주문 생성 중 오류가 발생했습니다.");
-  }
-});
+// Async thunks
+export const createOrder = createAsyncThunk(
+  "order/createOrder",
+  async (payload: Record<string, unknown>, { dispatch, rejectWithValue }) => {}
+);
 
-export const getOrder = createAsyncThunk<
-  { data: Order[] },
-  void,
-  { rejectValue: string }
->("order/getOrder", async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.get("/order");
-    return response.data;
-  } catch (error) {
-    return rejectWithValue("주문 목록을 불러오는 중 오류가 발생했습니다.");
-  }
-});
+export const getOrder = createAsyncThunk(
+  "order/getOrder",
+  async (_, { rejectWithValue, dispatch }) => {}
+);
 
-export const getOrderList = createAsyncThunk<
-  { data: Order[]; totalPageNum: number },
-  { page?: number; ordernum?: string },
-  { rejectValue: string }
->("order/getOrderList", async (query, { rejectWithValue }) => {
-  try {
-    const response = await api.get("/order/all", { params: query });
-    return response.data;
-  } catch (error) {
-    return rejectWithValue("주문 목록을 불러오는 중 오류가 발생했습니다.");
-  }
-});
+export const getOrderList = createAsyncThunk(
+  "order/getOrderList",
+  async (query: { page?: number; ordernum?: string }, { rejectWithValue, dispatch }) => {}
+);
 
-export const updateOrder = createAsyncThunk<
-  void,
-  { id: string; status: string },
-  { rejectValue: string }
->("order/updateOrder", async ({ id, status }, { dispatch, rejectWithValue }) => {
-  try {
-    await api.put(`/order/${id}`, { status });
-    dispatch(showToastMessage({ message: "주문 상태가 업데이트되었습니다.", status: "success" }));
-    dispatch(getOrderList({}));
-  } catch (error) {
-    return rejectWithValue("주문 업데이트 중 오류가 발생했습니다.");
-  }
-});
+export const updateOrder = createAsyncThunk(
+  "order/updateOrder",
+  async ({ id, status }: { id: string; status: string }, { dispatch, rejectWithValue }) => {}
+);
 
 const orderSlice = createSlice({
   name: "order",
@@ -74,19 +42,7 @@ const orderSlice = createSlice({
       state.selectedOrder = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(createOrder.fulfilled, (state, action) => {
-        state.orderNum = action.payload.orderNum;
-      })
-      .addCase(getOrder.fulfilled, (state, action) => {
-        state.orderList = action.payload.data;
-      })
-      .addCase(getOrderList.fulfilled, (state, action) => {
-        state.orderList = action.payload.data;
-        state.totalPageNum = action.payload.totalPageNum;
-      });
-  },
+  extraReducers: (builder) => {},
 });
 
 export const { setSelectedOrder } = orderSlice.actions;

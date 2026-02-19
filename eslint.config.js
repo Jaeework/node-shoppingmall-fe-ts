@@ -23,6 +23,8 @@ export default defineConfig([
       semi: ["warn"],
       indent: ["warn", 2],
       quotes: ["warn", "double"],
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     }
   },
 ])

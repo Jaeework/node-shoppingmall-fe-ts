@@ -60,59 +60,42 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   }, [showDialog]);
 
   const handleClose = () => {
-    setFormData({ ...InitialFormData });
-    setStock([]);
-    setStockError(false);
-    dispatch(clearError());
-    setShowDialog(false);
+    //모든걸 초기화시키고;
+    // 다이얼로그 닫아주기
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (stock.length === 0) {
-      setStockError(true);
-      return;
-    }
-    setStockError(false);
-    const stockObject: Record<string, number> = {};
-    stock.forEach(([size, qty]) => {
-      stockObject[size] = qty;
-    });
-    const payload = { ...formData, stock: stockObject };
-
+    //재고를 입력했는지 확인, 아니면 에러
+    // 재고를 배열에서 객체로 바꿔주기
+    // [['M',2]] 에서 {M:2}로
     if (mode === "new") {
-      dispatch(createProduct(payload));
-    } else if (selectedProduct) {
-      dispatch(editProduct({ id: selectedProduct._id, ...payload }));
+      //새 상품 만들기
+    } else {
+      // 상품 수정하기
     }
   };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { id, value } = event.target;
-    setFormData({ ...formData, [id]: value });
+    //form에 데이터 넣어주기
   };
 
   const addStock = () => {
-    setStock([...stock, ["", 0]]);
+    //재고타입 추가시 배열에 새 배열 추가
   };
 
   const deleteStock = (idx: number) => {
-    const newStock = stock.filter((_, i) => i !== idx);
-    setStock(newStock);
+    //재고 삭제하기
   };
 
   const handleSizeChange = (value: string, index: number) => {
-    const newStock = [...stock];
-    newStock[index] = [value, newStock[index][1]];
-    setStock(newStock);
+    //  재고 사이즈 변환하기
   };
 
   const handleStockChange = (value: string, index: number) => {
-    const newStock = [...stock];
-    newStock[index] = [newStock[index][0], Number(value)];
-    setStock(newStock);
+    //재고 수량 변환하기
   };
 
   const onHandleCategory = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -126,7 +109,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   };
 
   const uploadImage = (url: string) => {
-    setFormData({ ...formData, image: url });
+    //이미지 업로드
   };
 
   if (!showDialog) return null;

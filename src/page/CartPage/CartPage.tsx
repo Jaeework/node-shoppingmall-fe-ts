@@ -9,8 +9,8 @@ const CartPage: React.FC = () => {
   const { cartList } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
-    dispatch(getCartList());
-  }, [dispatch]);
+    //카트리스트 불러오기
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">

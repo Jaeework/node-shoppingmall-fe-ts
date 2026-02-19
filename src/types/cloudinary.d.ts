@@ -1,5 +1,6 @@
 interface CloudinaryWidget {
   open: () => void;
+  destroy: () => void;
 }
 
 interface CloudinaryUploadResult {
