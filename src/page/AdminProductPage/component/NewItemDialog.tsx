@@ -62,13 +62,15 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   }, [showDialog]);
 
   const handleClose = () => {
-    //모든걸 초기화시키고;
+    setFormData({ ...InitialFormData });
+    setStockError(false);
+    setStock([]);
+    dispatch(clearError());
     setShowDialog(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("formData: ", formData);
     //재고를 입력했는지 확인, 아니면 에러
     if (stock.length === 0) {
       setStockError(true);
