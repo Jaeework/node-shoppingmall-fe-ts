@@ -8,6 +8,7 @@ import {
   editProduct,
 } from "../../../features/product/productSlice";
 import Button from "../../../components/ui/atoms/button/Button";
+import ErrorMessage from "../../../components/ui/atoms/error-message/ErrorMessage";
 
 interface NewItemDialogProps {
   mode: "new" | "edit";
@@ -147,9 +148,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
 
         <div className="px-6 py-4">
           {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
+            <ErrorMessage message={error} variant="y2k" className="mb-4" />
           )}
 
           <form onSubmit={handleSubmit}>
