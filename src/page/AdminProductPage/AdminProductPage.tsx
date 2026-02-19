@@ -1,0 +1,125 @@
+import { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import ReactPaginate from "react-paginate";
+import { useAppDispatch, useAppSelector } from "../../features/hooks";
+import {
+  getProductList,
+  deleteProduct,
+  setSelectedProduct,
+} from "../../features/product/productSlice";
+import type { Product, SearchQuery } from "../../types";
+import NewItemDialog from "./component/NewItemDialog";
+import ProductTable from "./component/ProductTable";
+
+const AdminProductPage = () => {
+  const navigate = useNavigate();
+  const [query] = useSearchParams();
+  const dispatch = useAppDispatch();
+  const { productList, totalPageNum } = useAppSelector((state) => state.product);
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [mode, setMode] = useState<"new" | "edit">("new");
+  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
+    page: Number(query.get("page")) || 1,
+    name: query.get("name") || "",
+  });
+
+  const tableHeader = [
+    "#",
+    "Sku",
+    "Name",
+    "Price",
+    "Stock",
+    "Image",
+    "Status",
+    "",
+  ];
+
+  useEffect(() => {
+    const params: Record<string, string> = {
+      page: String(searchQuery.page),
+    };
+    if (searchQuery.name) {
+      params.name = searchQuery.name;
+    }
+    const queryString = new URLSearchParams(params).toString();
+    navigate("?" + queryString);
+    dispatch(getProductList(searchQuery));
+  }, [searchQuery]);
+
+  const deleteItem = (id: string) => {
+    dispatch(deleteProduct(id));
+  };
+
+  const openEditForm = (product: Product) => {
+    dispatch(setSelectedProduct(product));
+    setMode("edit");
+    setShowDialog(true);
+  };
+
+  const handleClickNewItem = () => {
+    setMode("new");
+    setShowDialog(true);
+  };
+
+  const handlePageClick = ({ selected }: { selected: number }) => {
+    setSearchQuery({ ...searchQuery, page: selected + 1 });
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="mt-2 mb-4">
+        <input
+          type="text"
+          placeholder="제품 이름으로 검색"
+          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+          value={searchQuery.name || ""}
+          onChange={(e) =>
+            setSearchQuery({ ...searchQuery, name: e.target.value, page: 1 })
+          }
+        />
+      </div>
+
+      <button
+        className="mb-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium"
+        onClick={handleClickNewItem}
+      >
+        Add New Item +
+      </button>
+
+      <ProductTable
+        header={tableHeader}
+        data={productList}
+        deleteItem={deleteItem}
+        openEditForm={openEditForm}
+      />
+
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={totalPageNum}
+        forcePage={Number(searchQuery.page) - 1}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+        containerClassName="flex gap-1 justify-center mt-6 flex-wrap"
+        pageClassName="page-item"
+        pageLinkClassName="px-3 py-1 border rounded text-sm hover:bg-gray-100"
+        activeClassName="active [&>a]:bg-gray-900 [&>a]:text-white [&>a]:border-gray-900"
+        previousLinkClassName="px-3 py-1 border rounded text-sm hover:bg-gray-100"
+        nextLinkClassName="px-3 py-1 border rounded text-sm hover:bg-gray-100"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="px-3 py-1 border rounded text-sm hover:bg-gray-100"
+      />
+
+      <NewItemDialog
+        mode={mode}
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+      />
+    </div>
+  );
+};
+
+export default AdminProductPage;
