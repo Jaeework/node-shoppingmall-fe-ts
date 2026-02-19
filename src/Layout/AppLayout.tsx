@@ -39,7 +39,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <div className="flex-1 overflow-auto p-6">{children}</div>
         </div>
       ) : (
-        <div className="w-full flex flex-col min-h-screen shadow-[inset_0_0_50px_var(--y2k-purple)]">
+        <div className="w-full flex flex-col min-h-screen border border-gray-300 lg:rounded-xl shadow-[inset_0_0_50px_var(--y2k-purple)]">
           <Header user={user} />
           <main className="w-full p-4 flex-1 flex justify-center">
             {children}

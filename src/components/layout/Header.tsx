@@ -44,7 +44,7 @@ function Header({ user }: HeaderProps) {
               className="flex gap-1 justify-center items-center cursor-pointer"
             >
               <FontAwesomeIcon icon={faUser} />
-              <span className="hidden sm:inline text-sm">로그아웃</span>
+              <span className="text-sm">로그아웃</span>
             </button>
           ) : (
             <Link
@@ -52,7 +52,7 @@ function Header({ user }: HeaderProps) {
               className="flex gap-1 justify-center items-center"
             >
               <FontAwesomeIcon icon={faUser} />
-              <span className="hidden sm:inline text-sm">로그인</span>
+              <span className="text-sm">로그인</span>
             </Link>
           )}
           <Link to="/cart" className="relative flex items-center gap-1">
