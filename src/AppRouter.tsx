@@ -13,6 +13,7 @@ import MyPage from "./page/MyPage/MyPage";
 import AdminProductPage from "./page/AdminProductPage/AdminProductPage";
 import AdminOrderPage from "./page/AdminOrderPage/AdminOrderPage";
 import NotFoundPage from "./page/NotFoundPage/NotFoundPage";
+import MyOrderPage from "./page/MyOrderPage/MyOrderPage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -27,7 +28,7 @@ const AppRouter: React.FC = () => {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<OrderCompletePage />} />
-          <Route path="/account/purchase" element={<MyPage />} />
+          <Route path="/me/purchase" element={<MyOrderPage />} />
         </Route>
 
         <Route element={<PrivateRoute permissionLevel="admin" />}>
