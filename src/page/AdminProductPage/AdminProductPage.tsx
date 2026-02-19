@@ -10,6 +10,7 @@ import {
 import type { Product, SearchQuery } from "../../types";
 import NewItemDialog from "./component/NewItemDialog";
 import ProductTable from "./component/ProductTable";
+import Button from "../../components/ui/atoms/button/Button";
 
 const AdminProductPage = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const AdminProductPage = () => {
         <input
           type="text"
           placeholder="제품 이름으로 검색"
-          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64 font-monoplex"
           value={searchQuery.name || ""}
           onChange={(e) =>
             setSearchQuery({ ...searchQuery, name: e.target.value, page: 1 })
@@ -72,12 +73,16 @@ const AdminProductPage = () => {
         />
       </div>
 
-      <button
-        className="mb-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium"
+      <Button
+        type="button"
+        variant="purple-gradient"
+        size="lg"
+        radius="md"
         onClick={handleClickNewItem}
+        className="mb-3"
       >
-        Add New Item +
-      </button>
+        <h1 className="font-heading text-[var(--background)]">Add New Item +</h1>
+      </Button>
 
       <ProductTable
         header={tableHeader}
@@ -94,7 +99,7 @@ const AdminProductPage = () => {
         forcePage={Number(searchQuery.page) - 1}
         previousLabel="< previous"
         renderOnZeroPageCount={null}
-        containerClassName="flex gap-1 justify-center mt-6 flex-wrap"
+        containerClassName="flex gap-1 justify-center mt-6 flex-wrap font-heading"
         pageClassName="page-item"
         pageLinkClassName="px-3 py-1 border rounded text-sm hover:bg-gray-100"
         activeClassName="active [&>a]:bg-gray-900 [&>a]:text-white [&>a]:border-gray-900"

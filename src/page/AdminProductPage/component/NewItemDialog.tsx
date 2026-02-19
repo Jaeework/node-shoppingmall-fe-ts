@@ -7,6 +7,7 @@ import {
   createProduct,
   editProduct,
 } from "../../../features/product/productSlice";
+import Button from "../../../components/ui/atoms/button/Button";
 
 interface NewItemDialogProps {
   mode: "new" | "edit";
@@ -61,16 +62,24 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
 
   const handleClose = () => {
     //모든걸 초기화시키고;
-    // 다이얼로그 닫아주기
+    setShowDialog(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log("formData: ", formData);
     //재고를 입력했는지 확인, 아니면 에러
+    if (stock.length === 0) {
+      setStockError(true);
+      return;
+    }
     // 재고를 배열에서 객체로 바꿔주기
-    // [['M',2]] 에서 {M:2}로
+    const totalStock = stock.reduce((prev, item) => {
+      return { ...prev, [item[0]]: item[1]};
+    }, {});
     if (mode === "new") {
       //새 상품 만들기
+      dispatch(createProduct({ ...formData, stock: totalStock }));
     } else {
       // 상품 수정하기
     }
@@ -79,23 +88,30 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    //form에 데이터 넣어주기
+    const { id, value } = event.target;
+    setFormData({ ...formData, [id]: value });
   };
 
   const addStock = () => {
-    //재고타입 추가시 배열에 새 배열 추가
+    setStock([ ...stock, ["", 0] ]);
   };
 
   const deleteStock = (idx: number) => {
-    //재고 삭제하기
+    const newStock = stock.filter((item, index) => index !== idx );
+    setStock(newStock);
   };
 
   const handleSizeChange = (value: string, index: number) => {
-    //  재고 사이즈 변환하기
+    const newStock = [...stock];
+    newStock[index][0] = value;
+    setStock(newStock);
   };
 
   const handleStockChange = (value: string, index: number) => {
-    //재고 수량 변환하기
+    if(isNaN(Number(value))) return;
+    const newStock = [...stock];
+    newStock[index][1] = Number(value);
+    setStock(newStock);
   };
 
   const onHandleCategory = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -109,7 +125,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   };
 
   const uploadImage = (url: string) => {
-    //이미지 업로드
+    setFormData({ ...formData, image: url });
   };
 
   if (!showDialog) return null;
@@ -118,7 +134,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
         <div className="flex justify-between items-center px-6 py-4 border-b">
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-lg font-heading">
             {mode === "new" ? "Create New Product" : "Edit Product"}
           </h2>
           <button
@@ -139,28 +155,28 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-heading text-gray-700 mb-1">
                   Sku
                 </label>
                 <input
                   id="sku"
                   type="text"
                   placeholder="Enter Sku"
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                   onChange={handleChange}
                   required
                   value={formData.sku}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-heading text-gray-700 mb-1">
                   Name
                 </label>
                 <input
                   id="name"
                   type="text"
                   placeholder="Name"
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                   onChange={handleChange}
                   required
                   value={formData.name}
@@ -169,13 +185,13 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-heading text-gray-700 mb-1">
                 Description
               </label>
               <textarea
                 id="description"
                 placeholder="Description"
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                 onChange={handleChange}
                 rows={3}
                 value={formData.description}
@@ -185,26 +201,27 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
 
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-heading text-gray-700">
                   Stock
                 </label>
                 {stockError && (
                   <span className="text-red-500 text-sm">재고를 추가해주세요</span>
                 )}
-                <button
+                <Button
                   type="button"
-                  className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded"
+                  size="sm"
+                  radius="md"
                   onClick={addStock}
                 >
-                  Add +
-                </button>
+                  <span className="text-[var(--background)] font-heading">Add +</span>
+                </Button>
               </div>
               <div>
                 {stock.map((item, index) => (
                   <div key={index} className="grid grid-cols-12 gap-2 mb-2">
-                    <div className="col-span-4">
+                    <div className="col-span-4 flex items-center">
                       <select
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                         onChange={(event) =>
                           handleSizeChange(event.target.value, index)
                         }
@@ -212,7 +229,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
                         value={item[0] ? item[0].toLowerCase() : ""}
                       >
                         <option value="" disabled hidden>
-                          Please Choose...
+                          Select Size
                         </option>
                         {SIZE.map((sizeItem, idx) => (
                           <option
@@ -229,10 +246,10 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
                         ))}
                       </select>
                     </div>
-                    <div className="col-span-6">
+                    <div className="col-span-6 flex items-center">
                       <input
                         type="number"
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                         placeholder="number of stock"
                         value={item[1]}
                         onChange={(event) =>
@@ -241,14 +258,17 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
                         required
                       />
                     </div>
+                    
                     <div className="col-span-2 flex items-center">
-                      <button
+                      <Button
                         type="button"
-                        className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded"
+                        size="sm"
+                        radius="md"
+                        variant="black"
                         onClick={() => deleteStock(index)}
                       >
-                        -
-                      </button>
+                        <span className="text-[var(--background)] font-heading">-</span>
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -256,7 +276,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-heading text-gray-700 mb-1">
                 Image
               </label>
               <CloudinaryUploadWidget uploadImage={uploadImage} />
@@ -272,26 +292,26 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
 
             <div className="grid grid-cols-3 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-heading text-gray-700 mb-1">
                   Price
                 </label>
                 <input
                   id="price"
                   type="number"
                   placeholder="0"
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                   value={formData.price}
                   required
                   onChange={handleChange}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-heading text-gray-700 mb-1">
                   Category
                 </label>
                 <select
                   multiple
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                   onChange={onHandleCategory}
                   value={formData.category}
                   required
@@ -304,12 +324,12 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-heading text-gray-700 mb-1">
                   Status
                 </label>
                 <select
                   id="status"
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 font-monoplex"
                   value={formData.status}
                   onChange={handleChange}
                   required
@@ -323,12 +343,14 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
               </div>
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium"
+              variant="purple-vivid"
+              size="lg"
+              radius="md"
             >
-              {mode === "new" ? "Submit" : "Edit"}
-            </button>
+              <h1 className="text-[var(--background)] font-heading">{mode === "new" ? "Submit" : "Edit"}</h1>
+            </Button>
           </form>
         </div>
       </div>

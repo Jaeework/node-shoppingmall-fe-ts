@@ -1,4 +1,4 @@
-export const CATEGORY = ["Top", "Dress", "Pants"] as const;
+export const CATEGORY = ["Top", "Dress", "Pants", "Bags", "Accessory"] as const;
 export type Category = (typeof CATEGORY)[number];
 
 export const STATUS = ["active", "disactive"] as const;

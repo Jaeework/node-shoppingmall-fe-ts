@@ -24,11 +24,11 @@ function Header({ user }: HeaderProps) {
     <header className="w-full p-4 bg-transparent shrink-0 text-[var(--foreground)] flex flex-col gap-2">
       <div>
         {user?.level === "admin" && (
-          <div className="bg-gray-900 text-white text-center py-1 text-xs">
-            <Link to="/admin/product?page=1" className="hover:underline">
+          <Link to="/admin/product?page=1" className="hover:underline">
+            <div className="bg-gray-900 text-white text-center py-1 text-xs">
                     Admin Page
-            </Link>
-          </div>
+            </div>
+          </Link>
         )}
       </div>
       <nav className="flex items-center justify-between">

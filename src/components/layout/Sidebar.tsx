@@ -10,18 +10,18 @@ const SidebarContent: React.FC<{ onSelect: (url: string) => void }> = ({ onSelec
         HOUSE_GLOW
       </h1>
     </Link>
-    <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+    <div className="text-xs font-heading text-gray-400 uppercase tracking-wider mb-3">
       Admin Account
     </div>
     <nav className="flex flex-col gap-1">
       <button
-        className="text-left py-2 px-3 rounded hover:bg-gray-200 text-sm font-medium transition-colors"
+        className="text-left py-2 px-3 rounded hover:bg-gray-200 text-sm font-semibold font-monoplex transition-colors"
         onClick={() => onSelect("/admin/product?page=1")}
       >
         Product
       </button>
       <button
-        className="text-left py-2 px-3 rounded hover:bg-gray-200 text-sm font-medium transition-colors"
+        className="text-left py-2 px-3 rounded hover:bg-gray-200 font-semibold text-sm font-monoplex transition-colors"
         onClick={() => onSelect("/admin/order?page=1")}
       >
         Order

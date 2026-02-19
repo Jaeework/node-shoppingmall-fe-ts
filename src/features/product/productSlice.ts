@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 import { showToastMessage } from "../common/uiSlice";
 import type { Product, ProductState } from "../../types/index";
+import { ApiError } from "../../utils/ApiError";
 
 // 비동기 액션 생성
 export const getProductList = createAsyncThunk(
@@ -15,9 +16,27 @@ export const getProductDetail = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {}
 );
 
-export const createProduct = createAsyncThunk(
+export const createProduct = createAsyncThunk<
+  Product,
+  Partial<Product>,
+  { rejectValue: string }
+>(
   "products/createProduct",
-  async (formData: Partial<Product>, { dispatch, rejectWithValue }) => {}
+  async (formData: Partial<Product>, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.post("/products", formData);
+      if (response.status !== 200) {
+        throw new ApiError(response.data.error);
+      }
+      dispatch(showToastMessage({ message: "상품 등록이 완료되었습니다.", status: "success"}));
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("상품 등록 도중 오류가 발생하였습니다. 관리자에 문의하세요.");
+    }
+  }
 );
 
 export const deleteProduct = createAsyncThunk(
@@ -56,7 +75,22 @@ const productSlice = createSlice({
       state.success = false;
     },
   },
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(createProduct.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.success = true;
+      })
+      .addCase(createProduct.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false;
+        state.error = action.payload ?? "상품 등록 에러";
+        state.success = false;
+      });
+  },
 });
 
 export const { setSelectedProduct, setFilteredList, clearError } = productSlice.actions;

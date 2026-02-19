@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import Button from "../components/ui/atoms/button/Button";
 
 const CLOUDNAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME as string;
 const UPLOADPRESET = import.meta.env.VITE_CLOUDINARY_PRESET as string;
@@ -42,13 +43,15 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({
   };
 
   return (
-    <button
+    <Button
       type="button"
+      variant="chrome"
+      radius="md"
+      size="md"
       onClick={handleClick}
-      className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium py-1 px-3 rounded ml-2 transition-colors"
     >
-      Upload Image +
-    </button>
+      <h1 className="text-sm text-gray-800 font-heading">Upload Image +</h1>
+    </Button>
   );
 };
 
