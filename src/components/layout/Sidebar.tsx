@@ -6,7 +6,9 @@ import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 const SidebarContent: React.FC<{ onSelect: (url: string) => void }> = ({ onSelect }) => (
   <div className="flex flex-col h-full p-4">
     <Link to="/" className="mb-6">
-      <img width={80} src="/image/hm-logo.png" alt="H&M logo" />
+      <h1 className="font-heading italic text-xl text-[var(--y2k-purple-vivid)]">
+        HOUSE_GLOW
+      </h1>
     </Link>
     <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
       Admin Account
@@ -40,13 +42,15 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* Desktop sidebar */}
-      <div className="hidden md:flex flex-col h-full border-r bg-gray-50">
+      <div className="hidden md:flex flex-col min-h-screen w-64 border-r bg-gray-50">
         <SidebarContent onSelect={handleSelect} />
       </div>
 
       {/* Mobile top bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-2 bg-gray-50 border-b">
-        <img width={64} src="/image/hm-logo.png" alt="H&M logo" />
+        <h1 className="font-heading italic text-xl text-[var(--y2k-purple-vivid)]">
+          HOUSE_GLOW
+        </h1>
         <button
           onClick={() => setShow(true)}
           className="p-2 text-gray-600 hover:text-gray-900"

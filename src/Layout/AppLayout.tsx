@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../features/hooks";
-import Sidebar from "../common/component/Sidebar";
-import ToastMessage from "../common/component/ToastMessage";
+import Sidebar from "../components/layout/Sidebar";
+import ToastMessage from "../components/layout/ToastMessage";
 import Header from "../components/layout/Header";
 import { loginWithToken } from "../features/user/userSlice";
 import { getCartQty } from "../features/cart/cartSlice";
@@ -32,8 +32,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <div>
       <ToastMessage />
       {isAdmin ? (
-        <div className="flex h-screen">
-          <div className="w-64 flex-shrink-0">
+        <div className="w-full flex flex-col md:flex-row min-h-screen shadow-[inset_0_0_50px_var(--y2k-purple)]">
+          <div className="flex-shrink-0">
             <Sidebar />
           </div>
           <div className="flex-1 overflow-auto p-6">{children}</div>
