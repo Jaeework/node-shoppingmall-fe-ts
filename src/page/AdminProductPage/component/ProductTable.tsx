@@ -1,3 +1,4 @@
+import Button from "../../../components/ui/atoms/button/Button";
 import type { Product } from "../../../types";
 
 interface ProductTableProps {
@@ -52,18 +53,26 @@ const ProductTable = ({ header, data, deleteItem, openEditForm }: ProductTablePr
                 </td>
                 <td className="px-4 py-3">{item.status}</td>
                 <td className="px-4 py-3" style={{ minWidth: "100px" }}>
-                  <button
-                    className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded mr-1"
-                    onClick={() => deleteItem(item._id)}
-                  >
-                    -
-                  </button>
-                  <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded"
-                    onClick={() => openEditForm(item)}
-                  >
-                    Edit
-                  </button>
+                  <div className="flex justify-center items-center gap-1">
+                    <Button
+                      type="button"
+                      size="xs"
+                      variant="black"
+                      radius="md"
+                      onClick={() => deleteItem(item._id)}
+                    >
+                      <span className="text-[var(--background)]">-</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      size="xs"
+                      variant="chrome"
+                      radius="md"
+                      onClick={() => openEditForm(item)}
+                    >
+                      <span className="text-[var(--background)]">Edit</span>
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))

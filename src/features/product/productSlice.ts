@@ -6,9 +6,24 @@ import type { Product, ProductState } from "../../types/index";
 import { ApiError } from "../../utils/ApiError";
 
 // 비동기 액션 생성
-export const getProductList = createAsyncThunk(
+export const getProductList = createAsyncThunk<
+  Product[],
+  { name?: string; page?: number; },
+  { rejectValue: string }
+>(
   "products/getProductList",
-  async (query: { name?: string; page?: number } | undefined, { rejectWithValue }) => {}
+  async (query: { name?: string; page?: number } | undefined, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/products", { params: query });
+      if (response.status !== 200) throw new ApiError(response.data.error);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof ApiError && error.isUserError) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("상품 목록을 불러오지 못했습니다.");
+    }
+  }
 );
 
 export const getProductDetail = createAsyncThunk(
@@ -89,6 +104,18 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload ?? "상품 등록 에러";
         state.success = false;
+      })
+      .addCase(getProductList.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getProductList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.productList = action.payload;
+        state.error = "";
+      })
+      .addCase(getProductList.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false;
+        state.error = action.payload || "상품 목록 조회 에러";
       });
   },
 });
