@@ -17,7 +17,7 @@ const AdminProductPage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { productList, totalPageNum } = useAppSelector((state) => state.product);
+  const { productList, totalPageNum, success } = useAppSelector((state) => state.product);
 
   const [showDialog, setShowDialog] = useState(false);
   const [mode, setMode] = useState<"new" | "edit">("new");
@@ -40,6 +40,13 @@ const AdminProductPage = () => {
   useEffect(() => {
     dispatch(getProductList({ ...searchQuery }));
   }, [query]);
+
+  // 상품 생성/수정 성공 시 목록 갱신
+  useEffect(() => {
+    if (success) {
+      dispatch(getProductList({ ...searchQuery }));
+    }
+  }, [success]);
 
   useEffect(() => {
     //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)

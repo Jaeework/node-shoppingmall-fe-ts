@@ -9,6 +9,7 @@ import {
 } from "../../../features/product/productSlice";
 import Button from "../../../components/ui/atoms/button/Button";
 import ErrorMessage from "../../../components/ui/atoms/error-message/ErrorMessage";
+import type { Product } from "../../../types";
 
 interface NewItemDialogProps {
   mode: "new" | "edit";
@@ -16,7 +17,9 @@ interface NewItemDialogProps {
   setShowDialog: (show: boolean) => void;
 }
 
-const InitialFormData = {
+type FormData = Omit<Product, "_id" | "createdAt" | "isDeleted">;
+
+const InitialFormData: FormData = {
   name: "",
   sku: "",
   stock: {} as Record<string, number>,
@@ -38,6 +41,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   );
   const [stock, setStock] = useState<[string, number][]>([]);
   const [stockError, setStockError] = useState(false);
+  const [priceError, setPriceError] = useState(false);
 
   useEffect(() => {
     if (success) setShowDialog(false);
@@ -64,6 +68,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   const handleClose = () => {
     setFormData({ ...InitialFormData });
     setStockError(false);
+    setPriceError(false);
     setStock([]);
     dispatch(clearError());
     setShowDialog(false);
@@ -72,10 +77,11 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     //재고를 입력했는지 확인, 아니면 에러
-    if (stock.length === 0) {
-      setStockError(true);
-      return;
-    }
+    const hasStockError = stock.length === 0;
+    const hasPriceError = formData.price <= 0;
+    setStockError(hasStockError);
+    setPriceError(hasPriceError);
+    if (hasStockError || hasPriceError) return;
     // 재고를 배열에서 객체로 바꿔주기
     const totalStock = stock.reduce((prev, item) => {
       return { ...prev, [item[0]]: item[1]};
@@ -305,6 +311,9 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
                   required
                   onChange={handleChange}
                 />
+                {priceError && (
+                  <span className="text-red-500 text-sm font-monoplex">가격을 입력해주세요.</span>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-heading text-gray-700 mb-1">
