@@ -29,7 +29,7 @@ function Input({
     .join(" ");
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="w-full flex flex-col gap-1">
       {label && (
         <label className="text-sm text-[var(--foreground)] font-heading">
           {label}

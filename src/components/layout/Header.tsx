@@ -1,32 +1,59 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faBox, faClose, faSearch, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { logout } from "../../features/user/userSlice";
+import { useAppSelector } from "../../features/hooks";
 import type { User } from "../../types/index";
+import Button from "../ui/atoms/button/Button";
+import { useState } from "react";
+import SearchBox from "./SearchBox";
 
 interface HeaderProps {
   user: User | null;
 }
 
 function Header({ user }: HeaderProps) {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { cartItemCount } = useAppSelector((state) => state.cart);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
+  const [showSearchBox, setShowSearchBox] = useState(false);
+  
+  const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      const val = event.currentTarget.value;
+      if (val === "") {
+        navigate("/");
+      } else {
+        navigate(`/?name=${val}`);
+      }
+    }
   };
-
+    
   return (
-    <header className="w-full p-4 bg-transparent shrink-0 text-[var(--foreground)] flex flex-col gap-2">
+    <header className="w-full p-4 bg-transparent shrink-0 text-[var(--foreground)] flex flex-col gap-2 relative">
+      <div 
+        className="w-full flex justify-center items-center overflow-hidden transition-all duration-300"
+        style={{
+          height: showSearchBox ? "50px" : "0"
+        }}
+      >
+        <SearchBox
+          onCheckEnter={onCheckEnter}
+          placeholder="상품 검색"
+          field="name"
+        />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowSearchBox(false)}
+        >
+          <FontAwesomeIcon icon={faClose} />
+        </Button>
+      </div>
       <div>
         {user?.level === "admin" && (
           <Link to="/admin/product?page=1" className="hover:underline">
-            <div className="bg-gray-900 text-white text-center py-1 text-xs">
-                    Admin Page
+            <div className="bg-gray-900 text-white text-center py-1 text-sm font-monoplex">
+              Admin Page
             </div>
           </Link>
         )}
@@ -37,22 +64,22 @@ function Header({ user }: HeaderProps) {
           className="cursor-pointer text-lg"
           fill="var(--foreground)"
         />
-        <div className="flex justify-center gap-4 items-center">
+        <div className="flex justify-center gap-2 items-center font-monoplex text-sm">
           {user ? (
-            <button
-              onClick={handleLogout}
-              className="flex gap-1 justify-center items-center cursor-pointer"
+            <Link
+              to="/me"
+              className="flex gap-1 justify-center items-center"
             >
               <FontAwesomeIcon icon={faUser} />
-              <span className="text-sm">로그아웃</span>
-            </button>
+              <span className="hidden sm:inline text-sm">마이페이지</span>
+            </Link>
           ) : (
             <Link
               to="/login"
               className="flex gap-1 justify-center items-center"
             >
               <FontAwesomeIcon icon={faUser} />
-              <span className="text-sm">로그인</span>
+              <span className="hidden sm:inline text-sm">로그인</span>
             </Link>
           )}
           <Link to="/cart" className="relative flex items-center gap-1">
@@ -62,6 +89,13 @@ function Header({ user }: HeaderProps) {
               <span className="text-xs">({cartItemCount})</span>
             )}
           </Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowSearchBox(!showSearchBox)}
+          >
+            <FontAwesomeIcon icon={faSearch} />
+          </Button>
         </div>
       </nav>
       <div className="flex justify-center items-center">

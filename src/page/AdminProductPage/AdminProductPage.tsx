@@ -11,10 +11,11 @@ import type { Product, SearchQuery } from "../../types";
 import NewItemDialog from "./component/NewItemDialog";
 import ProductTable from "./component/ProductTable";
 import Button from "../../components/ui/atoms/button/Button";
+import SearchBox from "../../components/layout/SearchBox";
 
 const AdminProductPage = () => {
   const navigate = useNavigate();
-  const [query] = useSearchParams();
+  const [query, setQuery] = useSearchParams();
   const dispatch = useAppDispatch();
   const { productList, totalPageNum } = useAppSelector((state) => state.product);
 
@@ -37,11 +38,17 @@ const AdminProductPage = () => {
   ];
   //상품리스트 가져오기 (url쿼리 맞춰서)
   useEffect(() => {
-    dispatch(getProductList({}));
-  }, []);
+    dispatch(getProductList({ ...searchQuery }));
+  }, [query]);
 
   useEffect(() => {
     //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
+    if (!searchQuery.name) {
+      delete searchQuery.name;
+    }
+    const params = new URLSearchParams(searchQuery);
+    const query = params.toString();
+    navigate("?" + query);
   }, [searchQuery]);
 
   const deleteItem = (id: string) => {
@@ -62,17 +69,19 @@ const AdminProductPage = () => {
     //  쿼리에 페이지값 바꿔주기
   };
 
+  const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      setSearchQuery({ ...searchQuery, page: 1, name: event.currentTarget.value });
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mt-2 mb-4">
-        <input
-          type="text"
+        <SearchBox
+          onCheckEnter={onCheckEnter}
           placeholder="제품 이름으로 검색"
-          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64 font-monoplex"
-          value={searchQuery.name || ""}
-          onChange={(e) =>
-            setSearchQuery({ ...searchQuery, name: e.target.value, page: 1 })
-          }
+          field="name"
         />
       </div>
 
