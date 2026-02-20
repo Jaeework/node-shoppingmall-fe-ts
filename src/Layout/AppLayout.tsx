@@ -32,14 +32,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <div>
       <ToastMessage />
       {isAdmin ? (
-        <div className="w-full flex flex-col md:flex-row min-h-screen shadow-[inset_0_0_30px_var(--y2k-purple)]">
+        <div className="w-full flex flex-col md:flex-row min-h-screen shadow-[inset_0_0_40px_var(--y2k-purple)]">
           <div className="flex-shrink-0">
             <Sidebar />
           </div>
           <div className="flex-1 overflow-auto p-6">{children}</div>
         </div>
       ) : (
-        <div className="w-full flex flex-col min-h-screen shadow-[inset_0_0_30px_var(--y2k-purple)]">
+        <div className="w-full flex flex-col min-h-screen">
           <div className="w-full max-w-[1500px] mx-auto">
             <Header user={user} />
             <main className="w-full p-4 flex-1 flex justify-center">

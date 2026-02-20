@@ -29,7 +29,7 @@ function Header({ user }: HeaderProps) {
   };
     
   return (
-    <header className="w-full p-4 bg-transparent shrink-0 text-[var(--foreground)] flex flex-col gap-2 relative">
+    <header className="w-full p-4 pb-5 border-b bg-transparent shrink-0 text-[var(--foreground)] flex flex-col gap-2 relative">
       <div 
         className="w-full flex justify-center items-center overflow-hidden transition-all duration-300"
         style={{
