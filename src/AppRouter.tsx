@@ -28,6 +28,7 @@ const AppRouter: React.FC = () => {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<OrderCompletePage />} />
+          <Route path="/me" element={<MyPage />} />
           <Route path="/me/purchase" element={<MyOrderPage />} />
         </Route>
 
