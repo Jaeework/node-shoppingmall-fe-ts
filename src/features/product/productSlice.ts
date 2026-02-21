@@ -7,7 +7,7 @@ import { ApiError } from "../../utils/ApiError";
 
 // 비동기 액션 생성
 export const getProductList = createAsyncThunk<
-  Product[],
+  { data: Product[]; totalPageNum: number },
   { name?: string; page?: number; },
   { rejectValue: string }
 >(
@@ -16,7 +16,7 @@ export const getProductList = createAsyncThunk<
     try {
       const response = await api.get("/products", { params: query });
       if (response.status !== 200) throw new ApiError(response.data.error);
-      return response.data.data;
+      return response.data;
     } catch (error) {
       if (error instanceof ApiError && error.isUserError) {
         return rejectWithValue(error.message);
@@ -44,7 +44,7 @@ export const createProduct = createAsyncThunk<
         throw new ApiError(response.data.error);
       }
       dispatch(showToastMessage({ message: "상품 등록이 완료되었습니다.", status: "success"}));
-      return response.data.data;
+      return response.data;
     } catch (error) {
       if (error instanceof ApiError) {
         return rejectWithValue(error.message);
@@ -110,8 +110,9 @@ const productSlice = createSlice({
       })
       .addCase(getProductList.fulfilled, (state, action) => {
         state.loading = false;
-        state.productList = action.payload;
+        state.productList = action.payload.data;
         state.error = "";
+        state.totalPageNum = action.payload.totalPageNum;
       })
       .addCase(getProductList.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false;
