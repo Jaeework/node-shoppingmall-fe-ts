@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import {
@@ -7,24 +7,23 @@ import {
   deleteProduct,
   setSelectedProduct,
 } from "../../features/product/productSlice";
-import type { Product, SearchQuery } from "../../types";
+import type { Product } from "../../types";
 import NewItemDialog from "./component/NewItemDialog";
 import ProductTable from "./component/ProductTable";
 import Button from "../../components/ui/atoms/button/Button";
 import SearchBox from "../../components/layout/SearchBox";
 
 const AdminProductPage = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useSearchParams();
   const dispatch = useAppDispatch();
   const { productList, totalPageNum, success } = useAppSelector((state) => state.product);
 
   const [showDialog, setShowDialog] = useState(false);
   const [mode, setMode] = useState<"new" | "edit">("new");
-  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-    page: Number(query.get("page")) || 1,
-    name: query.get("name") || "",
-  });
+
+  // URL에서 직접 값 읽기
+  const page = Number(query.get("page")) || 1;
+  const name = query.get("name") || "";
 
   const tableHeader = [
     "#",
@@ -36,29 +35,18 @@ const AdminProductPage = () => {
     "Status",
     "",
   ];
-  //상품리스트 가져오기 (url쿼리 맞춰서)
+
+  // 상품리스트 가져오기 (URL 쿼리 기반)
   useEffect(() => {
-    dispatch(getProductList({ ...searchQuery }));
+    dispatch(getProductList({ page, name }));
   }, [query]);
 
   // 상품 생성/수정 성공 시 목록 갱신
   useEffect(() => {
     if (success) {
-      dispatch(getProductList({ ...searchQuery }));
+      dispatch(getProductList({ page, name }));
     }
   }, [success]);
-
-  useEffect(() => {
-    //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
-    const params: Record<string, string> = {
-      page: String(searchQuery.page),
-    };
-    if (searchQuery.name) {
-      params.name = searchQuery.name;
-    }
-    const queryString = new URLSearchParams(params).toString();
-    navigate("?" + queryString);
-  }, [searchQuery]);
 
   const deleteItem = (id: string) => {
     //아이템 삭제하가ㅣ
@@ -75,22 +63,24 @@ const AdminProductPage = () => {
   };
 
   const handlePageClick = ({ selected }: { selected: number }) => {
-    setSearchQuery({ ...searchQuery, page: selected + 1 });
+    const params: Record<string, string> = { page: String(selected + 1) };
+    if (name) params.name = name;
+    setQuery(params);
   };
 
-  const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      setSearchQuery({ ...searchQuery, page: 1, name: event.currentTarget.value });
-    }
+  const handleSearch = (keyword: string) => {
+    const params: Record<string, string> = { page: "1" };
+    if (keyword) params.name = keyword;
+    setQuery(params);
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mt-2 mb-4">
         <SearchBox
-          onCheckEnter={onCheckEnter}
+          onSearch={handleSearch}
           placeholder="제품 이름으로 검색"
-          field="name"
+          searchField="name"
         />
       </div>
 
@@ -117,7 +107,7 @@ const AdminProductPage = () => {
         onPageChange={handlePageClick}
         pageRangeDisplayed={5}
         pageCount={totalPageNum}
-        forcePage={Number(searchQuery.page) - 1}
+        forcePage={page - 1}
         previousLabel="< previous"
         renderOnZeroPageCount={null}
         containerClassName="flex gap-1 justify-center mt-6 flex-wrap font-heading"

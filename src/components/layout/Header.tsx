@@ -17,14 +17,11 @@ function Header({ user }: HeaderProps) {
   const { cartItemCount } = useAppSelector((state) => state.cart);
   const [showSearchBox, setShowSearchBox] = useState(false);
   
-  const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      const val = event.currentTarget.value;
-      if (val === "") {
-        navigate("/");
-      } else {
-        navigate(`/?name=${val}`);
-      }
+  const handleSearch = (keyword: string) => {
+    if (keyword === "") {
+      navigate("/");
+    } else {
+      navigate(`/?name=${keyword}`);
     }
   };
     
@@ -37,9 +34,9 @@ function Header({ user }: HeaderProps) {
         }}
       >
         <SearchBox
-          onCheckEnter={onCheckEnter}
+          onSearch={handleSearch}
           placeholder="상품 검색"
-          field="name"
+          searchField="name"
         />
         <Button
           variant="ghost"
