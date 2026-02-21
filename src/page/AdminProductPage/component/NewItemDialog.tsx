@@ -37,7 +37,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   );
 
   const [formData, setFormData] = useState(
-    mode === "new" ? { ...InitialFormData } : { ...InitialFormData, ...selectedProduct }
+    mode === "new" ? { ...InitialFormData } : { ...selectedProduct }
   );
   const [stock, setStock] = useState<[string, number][]>([]);
   const [stockError, setStockError] = useState(false);
@@ -78,7 +78,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
     event.preventDefault();
     //재고를 입력했는지 확인, 아니면 에러
     const hasStockError = stock.length === 0;
-    const hasPriceError = formData.price <= 0;
+    const hasPriceError = !formData.price || formData.price <= 0;
     setStockError(hasStockError);
     setPriceError(hasPriceError);
     if (hasStockError || hasPriceError) return;
@@ -91,6 +91,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
       dispatch(createProduct({ ...formData, stock: totalStock }));
     } else {
       // 상품 수정하기
+      dispatch(editProduct({ ...formData, stock: totalStock, id: selectedProduct!._id }));
     }
   };
 

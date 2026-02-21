@@ -17,7 +17,7 @@ import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinne
 const AdminProductPage = () => {
   const [query, setQuery] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { productList, totalPageNum, success, loading } = useAppSelector((state) => state.product);
+  const { productList, totalPageNum, loading } = useAppSelector((state) => state.product);
 
   const [showDialog, setShowDialog] = useState(false);
   const [mode, setMode] = useState<"new" | "edit">("new");
@@ -42,21 +42,14 @@ const AdminProductPage = () => {
     dispatch(getProductList({ page, name }));
   }, [dispatch, query]);
 
-  // 상품 생성/수정 성공 시 목록 갱신
-  useEffect(() => {
-    if (success) {
-      dispatch(getProductList({ page, name }));
-    }
-  }, [success]);
-
-
   const deleteItem = (id: string) => {
     //아이템 삭제하가ㅣ
   };
 
   const openEditForm = (product: Product) => {
-    //edit모드로 설정하고
-    // 아이템 수정다이얼로그 열어주기
+    setMode("edit");
+    dispatch(setSelectedProduct(product));
+    setShowDialog(true);
   };
 
   const handleClickNewItem = () => {
