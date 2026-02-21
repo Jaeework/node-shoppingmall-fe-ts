@@ -12,16 +12,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
   return (
     <div
-      className="cursor-pointer rounded-lg overflow-hidden hover:shadow-md transition-shadow mb-4"
+      className="relative cursor-pointer hover:shadow-md transition-shadow mb-4 bg-white
+        border border-[var(--y2k-magenta-vivid)] after:content-[''] after:absolute after:inset-0 after:bg-[var(--y2k-magenta)] after:translate-x-1 after:translate-y-1 after:-z-10"
       onClick={() => navigate(`/product/${item._id}`)}
     >
       <img
         src={item.image}
         alt={item.name}
-        className="w-full aspect-[3/4] object-cover"
+        className="w-full aspect-[10/11] object-cover border-b border-[var(--y2k-magenta-vivid)]"
       />
-      <div className="px-1 mt-2 text-sm">{item.name}</div>
-      <div className="px-1 pb-2 text-sm font-medium">₩ {currencyFormat(item.price)}</div>
+      <div className="p-2 flex flex-col gap-1">
+        <div className="px-1 mt-2 text-xs font-heading truncate text-[--y2k-magenta-vivid]">{item.name}</div>
+        <div className="px-1 pb-2 text-sm font-heading">₩ {currencyFormat(item.price)}</div>
+      </div>
     </div>
   );
 };
