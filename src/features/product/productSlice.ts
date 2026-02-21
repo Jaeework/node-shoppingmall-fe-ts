@@ -26,9 +26,24 @@ export const getProductList = createAsyncThunk<
   }
 );
 
-export const getProductDetail = createAsyncThunk(
+export const getProductDetail = createAsyncThunk<
+  Product,
+  string,
+  {rejectValue: string}
+>(
   "products/getProductDetail",
-  async (id: string, { rejectWithValue }) => {}
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/products/${id}`);
+      if (response.status !== 200) throw new ApiError(response.data.error);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof ApiError && error.isUserError) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("상품 정보를 불러오지 못했습니다.");
+    }
+  }
 );
 
 export const createProduct = createAsyncThunk<
@@ -177,6 +192,18 @@ const productSlice = createSlice({
       })
       .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
+      })
+      .addCase(getProductDetail.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getProductDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.selectedProduct = action.payload;
+      })
+      .addCase(getProductDetail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "상품 상세 정보 조회 에러";
       });
   },
 });
