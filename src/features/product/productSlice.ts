@@ -44,7 +44,7 @@ export const createProduct = createAsyncThunk<
         throw new ApiError(response.data.error);
       }
       dispatch(getProductList({ page: 1 }));
-      dispatch(showToastMessage({ message: "상품 등록이 완료되었습니다.", status: "success"}));
+      dispatch(showToastMessage({ message: "상품 등록이 완료되었습니다.", status: "success" }));
       return response.data;
     } catch (error) {
       if (error instanceof ApiError) {
@@ -55,9 +55,29 @@ export const createProduct = createAsyncThunk<
   }
 );
 
-export const deleteProduct = createAsyncThunk(
+export const deleteProduct = createAsyncThunk<
+  Product,
+  string,
+  { rejectValue: string }
+>(
   "products/deleteProduct",
-  async (id: string, { dispatch, rejectWithValue }) => {}
+  async (id: string, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/products/${id}`);
+      if (response.status !== 200) {
+        throw new ApiError(response.data.error);
+      }
+      dispatch(getProductList({ page: 1 }));
+      dispatch(showToastMessage({ message: "상품을 삭제하였습니다.", status: "success" }));
+
+      return response.data.data;
+    } catch (error) {
+      const errorMessage = error instanceof ApiError ? error.message : "상품을 삭제하지 못했습니다. 관리자에 문의하세요.";
+      
+      dispatch(showToastMessage({ message: errorMessage, status: "error" }));
+      return rejectWithValue(errorMessage);
+    }
+  }
 );
 
 export const editProduct = createAsyncThunk<
@@ -81,8 +101,6 @@ export const editProduct = createAsyncThunk<
     }
   }
 );
-
-// 슬라이스 생성
 
 const initialState: ProductState = {
   productList: [],
@@ -150,6 +168,15 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "상품 수정 에러";
         state.success = false;
+      })
+      .addCase(deleteProduct.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
       });
   },
 });

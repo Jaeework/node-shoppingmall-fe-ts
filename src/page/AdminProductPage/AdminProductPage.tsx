@@ -9,6 +9,7 @@ import {
 } from "../../features/product/productSlice";
 import type { Product } from "../../types";
 import NewItemDialog from "./component/NewItemDialog";
+import DeleteItemDialog from "./component/DeleteItemDialog";
 import ProductTable from "./component/ProductTable";
 import Button from "../../components/ui/atoms/button/Button";
 import SearchBox from "../../components/layout/SearchBox";
@@ -21,6 +22,8 @@ const AdminProductPage = () => {
 
   const [showDialog, setShowDialog] = useState(false);
   const [mode, setMode] = useState<"new" | "edit">("new");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
 
   // URL에서 직접 읽기
   const page = Number(query.get("page")) || 1;
@@ -42,8 +45,22 @@ const AdminProductPage = () => {
     dispatch(getProductList({ page, name }));
   }, [dispatch, query]);
 
-  const deleteItem = (id: string) => {
-    //아이템 삭제하가ㅣ
+  const openDeleteDialog = (product: Product) => {
+    setDeleteTarget(product);
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteTarget) {
+      dispatch(deleteProduct(deleteTarget._id));
+    }
+    setShowDeleteDialog(false);
+    setDeleteTarget(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteDialog(false);
+    setDeleteTarget(null);
   };
 
   const openEditForm = (product: Product) => {
@@ -70,7 +87,7 @@ const AdminProductPage = () => {
       if (searchName) params.name = searchName;
       setQuery(params);
     }
-  }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -101,7 +118,7 @@ const AdminProductPage = () => {
         <ProductTable
           header={tableHeader}
           data={productList}
-          deleteItem={deleteItem}
+          deleteItem={openDeleteDialog}
           openEditForm={openEditForm}
         />
       )}
@@ -129,6 +146,13 @@ const AdminProductPage = () => {
         mode={mode}
         showDialog={showDialog}
         setShowDialog={setShowDialog}
+      />
+
+      <DeleteItemDialog
+        itemName={deleteTarget?.name || "해당 상품"}
+        showDialog={showDeleteDialog}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
       />
     </div>
   );

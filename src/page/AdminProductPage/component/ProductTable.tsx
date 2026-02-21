@@ -4,7 +4,7 @@ import type { Product } from "../../../types";
 interface ProductTableProps {
   header: string[];
   data: Product[] | string;
-  deleteItem: (id: string) => void;
+  deleteItem: (product: Product) => void;
   openEditForm: (product: Product) => void;
 }
 
@@ -59,7 +59,7 @@ const ProductTable = ({ header, data, deleteItem, openEditForm }: ProductTablePr
                       size="xs"
                       variant="black"
                       radius="md"
-                      onClick={() => deleteItem(item._id)}
+                      onClick={() => deleteItem(item)}
                     >
                       <span className="text-[var(--background)]">-</span>
                     </Button>
