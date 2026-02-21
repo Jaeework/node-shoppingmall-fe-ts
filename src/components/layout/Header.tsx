@@ -1,6 +1,6 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faBox, faClose, faSearch, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faClose, faSearch, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { useAppSelector } from "../../features/hooks";
 import type { User } from "../../types/index";
@@ -16,7 +16,6 @@ function Header({ user }: HeaderProps) {
   const navigate = useNavigate();
   const { cartItemCount } = useAppSelector((state) => state.cart);
   const [showSearchBox, setShowSearchBox] = useState(false);
-  const location = useLocation();
   
   const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -38,7 +37,6 @@ function Header({ user }: HeaderProps) {
         }}
       >
         <SearchBox
-          key={location.search}
           onCheckEnter={onCheckEnter}
           placeholder="상품 검색"
           field="name"

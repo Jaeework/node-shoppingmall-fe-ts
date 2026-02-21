@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import {
@@ -7,24 +7,24 @@ import {
   deleteProduct,
   setSelectedProduct,
 } from "../../features/product/productSlice";
-import type { Product, SearchQuery } from "../../types";
+import type { Product } from "../../types";
 import NewItemDialog from "./component/NewItemDialog";
 import ProductTable from "./component/ProductTable";
 import Button from "../../components/ui/atoms/button/Button";
 import SearchBox from "../../components/layout/SearchBox";
+import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 const AdminProductPage = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { productList, totalPageNum, success } = useAppSelector((state) => state.product);
+  const { productList, totalPageNum, success, loading } = useAppSelector((state) => state.product);
 
   const [showDialog, setShowDialog] = useState(false);
   const [mode, setMode] = useState<"new" | "edit">("new");
-  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-    page: Number(query.get("page")) || 1,
-    name: query.get("name") || "",
-  });
+
+  // URL에서 직접 읽기
+  const page = Number(query.get("page")) || 1;
+  const name = query.get("name") || "";
 
   const tableHeader = [
     "#",
@@ -39,27 +39,15 @@ const AdminProductPage = () => {
 
   // 상품리스트 가져오기 (URL 쿼리 기반)
   useEffect(() => {
-    dispatch(getProductList({ ...searchQuery }));
-  }, [query]);
+    dispatch(getProductList({ page, name }));
+  }, [dispatch, query]);
 
   // 상품 생성/수정 성공 시 목록 갱신
   useEffect(() => {
     if (success) {
-      dispatch(getProductList({ ...searchQuery }));
+      dispatch(getProductList({ page, name }));
     }
   }, [success]);
-
-  useEffect(() => {
-    //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
-    const params: Record<string, string> = {
-      page: String(searchQuery.page),
-    };
-    if (searchQuery.name) {
-      params.name = searchQuery.name;
-    }
-    const queryString = new URLSearchParams(params).toString();
-    navigate("?" + queryString);
-  }, [searchQuery]);
 
 
   const deleteItem = (id: string) => {
@@ -77,12 +65,17 @@ const AdminProductPage = () => {
   };
 
   const handlePageClick = ({ selected }: { selected: number }) => {
-    setSearchQuery({ ...searchQuery, page: selected + 1 });
+    const params: Record<string, string> = { page: String(selected + 1) };
+    if (name) params.name = name;
+    setQuery(params);
   };
 
   const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      setSearchQuery({ ...searchQuery, page: 1, name: event.currentTarget.value });
+      const searchName = event.currentTarget.value;
+      const params: Record<string, string> = { page: "1" };
+      if (searchName) params.name = searchName;
+      setQuery(params);
     }
   }
 
@@ -107,19 +100,25 @@ const AdminProductPage = () => {
         <h1 className="font-heading text-[var(--background)]">Add New Item +</h1>
       </Button>
 
-      <ProductTable
-        header={tableHeader}
-        data={productList}
-        deleteItem={deleteItem}
-        openEditForm={openEditForm}
-      />
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[200px]">
+          <LoaderSpinner />
+        </div>
+      ) : (
+        <ProductTable
+          header={tableHeader}
+          data={productList}
+          deleteItem={deleteItem}
+          openEditForm={openEditForm}
+        />
+      )}
 
       <ReactPaginate
         nextLabel="next >"
         onPageChange={handlePageClick}
         pageRangeDisplayed={5}
         pageCount={totalPageNum}
-        forcePage={Number(searchQuery.page) - 1}
+        forcePage={page - 1}
         previousLabel="< previous"
         renderOnZeroPageCount={null}
         containerClassName="flex gap-1 justify-center mt-6 flex-wrap font-heading"
