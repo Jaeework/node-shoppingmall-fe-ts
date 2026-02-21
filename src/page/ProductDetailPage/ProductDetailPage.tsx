@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ColorRing } from "react-loader-spinner";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { getProductDetail } from "../../features/product/productSlice";
 import { addToCart } from "../../features/cart/cartSlice";
 import { currencyFormat } from "../../utils/number";
+import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 const ProductDetailPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,13 +34,7 @@ const ProductDetailPage: React.FC = () => {
   if (loading || !selectedProduct) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <ColorRing
-          visible
-          height="80"
-          width="80"
-          ariaLabel="loading"
-          colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
-        />
+        <LoaderSpinner />
       </div>
     );
   }
