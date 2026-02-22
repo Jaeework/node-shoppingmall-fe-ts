@@ -118,7 +118,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   };
 
   const handleStockChange = (value: string, index: number) => {
-    if(isNaN(Number(value))) return;
+    if(isNaN(Number(value)) || Number(value) < 0) return;
     const newStock = [...stock];
     newStock[index][1] = Number(value);
     setStock(newStock);
