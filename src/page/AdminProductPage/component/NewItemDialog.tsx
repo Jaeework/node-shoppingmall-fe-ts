@@ -37,7 +37,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
   );
 
   const [formData, setFormData] = useState(
-    mode === "new" ? { ...InitialFormData } : { ...selectedProduct }
+    mode === "new" ? { ...InitialFormData } : { ...InitialFormData, ...selectedProduct }
   );
   const [stock, setStock] = useState<[string, number][]>([]);
   const [stockError, setStockError] = useState(false);
@@ -53,7 +53,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }: NewItemDialogProps) 
     }
     if (showDialog) {
       if (mode === "edit" && selectedProduct) {
-        setFormData({ ...selectedProduct });
+        setFormData({ ...InitialFormData, ...selectedProduct });
         const sizeArray: [string, number][] = Object.keys(selectedProduct.stock).map(
           (size) => [size, selectedProduct.stock[size]]
         );
