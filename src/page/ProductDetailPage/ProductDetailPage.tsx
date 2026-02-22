@@ -5,6 +5,7 @@ import { getProductDetail } from "../../features/product/productSlice";
 import { addToCart } from "../../features/cart/cartSlice";
 import { currencyFormat } from "../../utils/number";
 import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinner";
+import Button from "../../components/ui/atoms/button/Button";
 
 const ProductDetailPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +23,9 @@ const ProductDetailPage: React.FC = () => {
   }, [id, dispatch]);
 
   const selectSize = (value: string) => {
-    // 사이즈 추가하기
+    setSizeError(false);
+    setSize(value);
+    setDropdownOpen(false);
   };
 
   const addItemToCart = () => {
@@ -47,15 +50,15 @@ const ProductDetailPage: React.FC = () => {
           <img
             src={selectedProduct.image}
             alt={selectedProduct.name}
-            className="w-full rounded-lg"
+            className="w-full rounded-lg border border-gray-200 shadow-lg"
           />
         </div>
 
         {/* Product info */}
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-bold">{selectedProduct.name}</h1>
-          <p className="text-xl text-gray-700">₩ {currencyFormat(selectedProduct.price)}</p>
-          <p className="text-gray-600 text-sm">{selectedProduct.description}</p>
+          <h1 className="text-2xl font-heading">{selectedProduct.name}</h1>
+          <p className="text-xl text-gray-700 font-heading">₩ {currencyFormat(selectedProduct.price)}</p>
+          <p className="text-gray-600 text-sm font-monoplex">{selectedProduct.description}</p>
 
           {/* Size dropdown */}
           <div className="relative">
@@ -66,7 +69,7 @@ const ProductDetailPage: React.FC = () => {
                 sizeError ? "border-red-500" : "border-gray-300 hover:border-gray-500"
               }`}
             >
-              <span>{size === "" ? "사이즈 선택" : size.toUpperCase()}</span>
+              <span className="font-monoplex">{size === "" ? "사이즈 선택" : size.toUpperCase()}</span>
               <span className="text-gray-400">▾</span>
             </button>
 
@@ -79,7 +82,7 @@ const ProductDetailPage: React.FC = () => {
                       key={idx}
                       type="button"
                       onClick={() => !isDisabled && selectSize(item)}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors font-monoplex ${
                         isDisabled
                           ? "text-gray-300 cursor-not-allowed"
                           : "hover:bg-gray-100 cursor-pointer"
@@ -97,13 +100,17 @@ const ProductDetailPage: React.FC = () => {
             <p className="text-red-500 text-xs -mt-2">사이즈를 선택해주세요.</p>
           )}
 
-          <button
+          <Button
             type="button"
+            variant="black"
+            radius="md"
+            size="xl"
+            isFullWidth
+            className="mt-2"
             onClick={addItemToCart}
-            className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded font-medium transition-colors mt-2"
           >
-            추가
-          </button>
+            <h1 className="text-[--background] font-heading">추가</h1>
+          </Button>
         </div>
       </div>
     </div>
