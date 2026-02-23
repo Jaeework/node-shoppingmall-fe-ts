@@ -29,9 +29,9 @@ const ProductDetailPage: React.FC = () => {
   };
 
   const addItemToCart = () => {
-    //사이즈를 아직 선택안했다면 에러
-    // 아직 로그인을 안한유저라면 로그인페이지로
-    // 카트에 아이템 추가하기
+    if (!size) return setSizeError(true);
+    if (!user) return navigate("/login");
+    if (id) dispatch(addToCart({ id, size }));
   };
 
   if (loading || !selectedProduct) {

@@ -1,7 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 import { showToastMessage } from "../common/uiSlice";
 import type { CartState } from "../../types/index";
+import { ApiError } from "../../utils/ApiError";
 
 const initialState: CartState = {
   loading: false,
@@ -13,9 +14,30 @@ const initialState: CartState = {
 };
 
 // Async thunk actions
-export const addToCart = createAsyncThunk(
+export const addToCart = createAsyncThunk<
+  number,
+  { id: string, size: string },
+  { rejectValue: string }
+>(
   "cart/addToCart",
-  async ({ id, size }: { id: string; size: string }, { rejectWithValue, dispatch }) => {}
+  async ({ id, size }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.post("/cart", { productId: id, size, qty: 1 });
+      if (response.status !== 200) throw new ApiError(response.data.error);
+      dispatch(showToastMessage({ message: "카트에 아이템이 추가됐습니다.", status: "success" }));
+
+      return response.data.cartItemQuantity;
+    } catch (error) {
+      let errorMessage;
+      if (error instanceof ApiError && error.isUserError) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = "상품을 카트에 추가하지 못했습니다.";
+      }
+      dispatch(showToastMessage({ message: errorMessage, status: "error" }));
+      return rejectWithValue(errorMessage);
+    }
+  }
 );
 
 export const getCartList = createAsyncThunk(
@@ -46,7 +68,21 @@ const cartSlice = createSlice({
       state.cartItemCount = 0;
     },
   },
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(addToCart.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.cartItemCount = action.payload;
+      })
+      .addCase(addToCart.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false;
+        state.error = action.payload || "카트 상품 추가 에러";
+      });
+  },
 });
 
 export const { initialCart } = cartSlice.actions;
