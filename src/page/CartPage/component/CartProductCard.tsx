@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch } from "../../../features/hooks";
 import { updateQty, deleteCartItem } from "../../../features/cart/cartSlice";
 import { currencyFormat } from "../../../utils/number";
@@ -13,9 +13,19 @@ interface CartProductCardProps {
 
 const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
   const dispatch = useAppDispatch();
+  const [stockError, setStockError] = useState<string | null>(null);
 
   const handleQtyChange = (id: string, value: number) => {
     if (value <= 0) return;
+
+    const maxStock = item.productId.stock[item.size];
+
+    if (value > maxStock) {
+      setStockError(`최대 가능 수량 ${maxStock}개`);
+      return;
+    }
+
+    setStockError(null);
     dispatch(updateQty({ id, value }));
   };
 
@@ -44,30 +54,35 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
         <p className="text-sm text-gray-500 font-orbit">SIZE: {item.size.toUpperCase()}</p>
         <p className="font-orbit text-xs mt-1">₩ {currencyFormat(item.productId.price)}</p>
         <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-          <div className="flex items-center max-w-1/3">
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              radius="none"
-              className="text-[var(--y2k-black)]"
-              onClick={() => handleQtyChange(item._id, Number(item.qty - 1))}
-            >
-              <p className="font-orbit text-lg">-</p>
-            </Button>
-            <p className="font-heading px-3">
-              {item.qty}
+          <div className="flex flex-col max-w-1/3">
+            <div className="flex items-center">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                radius="none"
+                className="text-[var(--y2k-black)]"
+                onClick={() => handleQtyChange(item._id, Number(item.qty - 1))}
+              >
+                <p className="font-orbit text-lg">-</p>
+              </Button>
+              <p className="font-heading px-3">
+                {item.qty}
+              </p>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                radius="none"
+                className="text-[var(--y2k-black)]"
+                onClick={() => handleQtyChange(item._id, Number(item.qty + 1))}
+              >
+                <p className="font-orbit text-lg">+</p>
+              </Button>
+            </div>
+            <p className={`text-xs ml-2 ${stockError ? "text-red-500" : "invisible"}`}>
+              {stockError || "\u00A0"}
             </p>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              radius="none"
-              className="text-[var(--y2k-black)]"
-              onClick={() => handleQtyChange(item._id, Number(item.qty + 1))}
-            >
-              <p className="font-orbit text-lg">+</p>
-            </Button>
           </div>
           <p className="text-md font-heading text-[var(--y2k-purple-deep)]">
             ₩ {currencyFormat(item.productId.price * item.qty)}

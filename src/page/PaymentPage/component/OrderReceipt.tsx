@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../features/hooks";
+import Button from "../../../components/ui/atoms/button/Button";
 
 const OrderReceipt = () => {
   const location = useLocation();
@@ -13,19 +14,19 @@ const OrderReceipt = () => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h3 className="text-xl font-bold mb-4">주문 내역</h3>
+      <h3 className="text-xl font-bold mb-4 font-monoplex">주문 내역</h3>
       <ul>
         {cartList.map((item, index) => (
           <li key={index} className="flex justify-between py-2 border-b text-sm">
-            <div>
+            <div className="font-monoplex text-xs">
               {item.productId.name}{" "}
               <span className="text-gray-500">x {item.qty}</span>
             </div>
-            <div>₩ {currencyFormat(item.productId.price * item.qty)}</div>
+            <div className="font-orbit text-xs">₩ {currencyFormat(item.productId.price * item.qty)}</div>
           </li>
         ))}
       </ul>
-      <div className="flex justify-between font-bold text-lg mt-4 pt-2">
+      <div className="flex justify-between font-heading text-lg mt-4 pt-2">
         <div>
           <strong>Total:</strong>
         </div>
@@ -33,18 +34,23 @@ const OrderReceipt = () => {
           <strong>₩ {currencyFormat(totalPrice)}</strong>
         </div>
       </div>
-      <p className="text-xs text-gray-500 mt-4">
+      <p className="text-xs text-gray-500 mt-4 font-monoplex">
         가능한 결제 수단 귀하가 결제 단계에 도달할 때까지 가격 및 배송료는
         확인되지 않습니다. 30일의 반품 가능 기간, 반품 수수료 및 미수취시
         발생하는 추가 배송 요금 읽어보기 반품 및 환불
       </p>
       {location.pathname.includes("/cart") && cartList.length > 0 && (
-        <button
-          className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded font-medium mt-4 transition-colors"
+        <Button
+          type="button"
+          variant="purple-gradient"
+          isFullWidth
+          radius="xl"
+          size="lg"
+          className="text-white font-heading mt-4"
           onClick={() => navigate("/payment")}
         >
-          결제하기
-        </button>
+          CHECK OUT NOW
+        </Button>
       )}
     </div>
   );
