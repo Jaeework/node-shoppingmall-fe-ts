@@ -9,7 +9,7 @@ const CartPage: React.FC = () => {
   const { cartList } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
-    //카트리스트 불러오기
+    dispatch(getCartList());
   }, []);
 
   return (

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 import { showToastMessage } from "../common/uiSlice";
-import type { CartState } from "../../types/index";
+import type { CartItem, CartState } from "../../types/index";
 import { ApiError } from "../../utils/ApiError";
 
 const initialState: CartState = {
@@ -40,9 +40,24 @@ export const addToCart = createAsyncThunk<
   }
 );
 
-export const getCartList = createAsyncThunk(
+export const getCartList = createAsyncThunk<
+  CartItem[],
+  void,
+  { rejectValue: string }
+>(
   "cart/getCartList",
-  async (_, { rejectWithValue, dispatch }) => {}
+  async (_, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.get("/cart");
+      if (response.status !== 200) throw new ApiError(response.data.error);
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof ApiError && error.isUserError) {
+        return rejectWithValue(error.message);
+      } 
+      return rejectWithValue("카트 정보를 가지고 오지 못했습니다.");
+    }
+  }
 );
 
 export const deleteCartItem = createAsyncThunk(
@@ -81,6 +96,19 @@ const cartSlice = createSlice({
       .addCase(addToCart.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false;
         state.error = action.payload || "카트 상품 추가 에러";
+      })
+      .addCase(getCartList.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getCartList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.cartList = action.payload;
+        state.totalPrice = action.payload.reduce((total, item) => total + (item.productId.price * item.qty), 0);
+      })
+      .addCase(getCartList.rejected, (state, action: PayloadAction<string | undefined>) => {
+        state.loading = false;
+        state.error = action.payload || "상품 카드 조회 에러";
       });
   },
 });

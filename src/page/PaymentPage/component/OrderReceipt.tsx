@@ -15,8 +15,8 @@ const OrderReceipt = () => {
     <div className="bg-white border border-gray-200 rounded-lg p-6">
       <h3 className="text-xl font-bold mb-4">주문 내역</h3>
       <ul>
-        {cartList.map((item) => (
-          <li key={item._id} className="flex justify-between py-2 border-b text-sm">
+        {cartList.map((item, index) => (
+          <li key={index} className="flex justify-between py-2 border-b text-sm">
             <div>
               {item.productId.name}{" "}
               <span className="text-gray-500">x {item.qty}</span>
