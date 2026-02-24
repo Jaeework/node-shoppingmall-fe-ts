@@ -85,9 +85,7 @@ function Header({ user }: HeaderProps) {
           <Link to="/cart" className="relative flex items-center gap-1">
             <FontAwesomeIcon icon={faShoppingBag} />
             <span className="hidden sm:inline text-sm">장바구니</span>
-            {cartItemCount > 0 && (
-              <span className="text-xs">({cartItemCount})</span>
-            )}
+            <span className="text-xs">{`(${cartItemCount ?? 0})`}</span>
           </Link>
           <Button
             variant="ghost"
