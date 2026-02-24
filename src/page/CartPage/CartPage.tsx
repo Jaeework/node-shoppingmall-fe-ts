@@ -10,11 +10,12 @@ const CartPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(getCartList());
+    console.log("items : ", cartList);
   }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">쇼핑백</h1>
+      <h1 className="text-2xl font-semibold font-monoplex italic mb-6">BAG</h1>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Cart items */}
         <div className="lg:col-span-7">
@@ -24,8 +25,8 @@ const CartPage: React.FC = () => {
             ))
           ) : (
             <div className="text-center py-20 text-gray-500">
-              <h2 className="text-xl mb-2">카트가 비어있습니다.</h2>
-              <p>상품을 담아주세요!</p>
+              <h2 className="text-xl mb-2 font-monoplex">카트가 비어있습니다.</h2>
+              <p className="font-monoplex">상품을 담아주세요!</p>
             </div>
           )}
         </div>

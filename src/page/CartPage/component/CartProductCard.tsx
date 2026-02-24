@@ -1,10 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch } from "../../../features/hooks";
 import { updateQty, deleteCartItem } from "../../../features/cart/cartSlice";
 import { currencyFormat } from "../../../utils/number";
 import type { CartItem } from "../../../types/index";
+import Button from "../../../components/ui/atoms/button/Button";
 
 interface CartProductCardProps {
   item: CartItem;
@@ -14,6 +15,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
   const dispatch = useAppDispatch();
 
   const handleQtyChange = (id: string, value: number) => {
+    if (value <= 0) return;
     dispatch(updateQty({ id, value }));
   };
 
@@ -22,40 +24,54 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
   };
 
   return (
-    <div className="flex gap-4 border-b py-4">
+    <div className="flex gap-4 p-4 relative bg-white
+        border border-[var(--y2k-black)] after:content-[''] after:absolute after:inset-0 after:bg-[var(--y2k-black)] after:translate-x-1 after:translate-y-1 after:-z-10">
       <img
         src={item.productId.image}
         alt={item.productId.name}
-        className="w-24 h-32 object-cover rounded"
+        className="w-32 h-32 object-cover border border-[--y2k-black] p-1"
       />
-      <div className="flex-1">
+      <div className="flex flex-col flex-1 justify-between">
         <div className="flex justify-between items-start">
-          <h3 className="font-semibold text-base">{item.productId.name}</h3>
+          <h3 className="w-0 flex-1 font-heading text-lg sm:text-xl text-base truncate text-ellipsis">{item.productId.name}</h3>
           <button
             onClick={() => deleteCart(item._id)}
             className="text-gray-400 hover:text-red-500 transition-colors p-1"
           >
-            <FontAwesomeIcon icon={faTrash} />
+            <FontAwesomeIcon icon={faTrash} className="text-[var(--y2k-purple-deep)]" />
           </button>
         </div>
-        <p className="font-medium text-sm mt-1">₩ {currencyFormat(item.productId.price)}</p>
-        <p className="text-sm text-gray-500">Size: {item.size}</p>
-        <p className="text-sm font-medium">
-          Total: ₩ {currencyFormat(item.productId.price * item.qty)}
-        </p>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="text-sm text-gray-600">Quantity:</span>
-          <select
-            defaultValue={item.qty}
-            onChange={(e) => handleQtyChange(item._id, Number(e.target.value))}
-            className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none"
-          >
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
+        <p className="text-sm text-gray-500 font-orbit">SIZE: {item.size.toUpperCase()}</p>
+        <p className="font-orbit text-xs mt-1">₩ {currencyFormat(item.productId.price)}</p>
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+          <div className="flex items-center max-w-1/3">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              radius="none"
+              className="text-[var(--y2k-black)]"
+              onClick={() => handleQtyChange(item._id, Number(item.qty - 1))}
+            >
+              <p className="font-orbit text-lg">-</p>
+            </Button>
+            <p className="font-heading px-3">
+              {item.qty}
+            </p>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              radius="none"
+              className="text-[var(--y2k-black)]"
+              onClick={() => handleQtyChange(item._id, Number(item.qty + 1))}
+            >
+              <p className="font-orbit text-lg">+</p>
+            </Button>
+          </div>
+          <p className="text-md font-heading text-[var(--y2k-purple-deep)]">
+            ₩ {currencyFormat(item.productId.price * item.qty)}
+          </p>
         </div>
       </div>
     </div>

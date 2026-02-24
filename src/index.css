@@ -67,7 +67,7 @@
 }
 
 :root {
-  --background: #ededed;
+  --background: #f0f0f0;
   --foreground: #171717;
   --y2k-purple: #7c4dff;
   --y2k-purple-deep: #7000ff;
@@ -105,6 +105,9 @@
   .font-heading {
     font-family: "Orbitron", "Orbit", sans-serif;
     font-weight: bolder;
+  }
+  .font-orbit {
+    font-family: "Orbitron", "Orbit", sans-serif;
   }
   .font-monoplex {
     font-family:
