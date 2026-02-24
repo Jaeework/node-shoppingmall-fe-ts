@@ -3,14 +3,23 @@ import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { getCartList } from "../../features/cart/cartSlice";
 import CartProductCard from "./component/CartProductCard";
 import OrderReceipt from "../PaymentPage/component/OrderReceipt";
+import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 const CartPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { cartList } = useAppSelector((state) => state.cart);
+  const { cartList, loading } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(getCartList());
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px] lg:col-span-12">
+        <LoaderSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
