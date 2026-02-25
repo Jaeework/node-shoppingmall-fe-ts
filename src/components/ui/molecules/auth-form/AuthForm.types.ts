@@ -6,6 +6,7 @@ export interface AuthFormField {
   type: React.HTMLInputTypeAttribute;
   placeholder: string;
   required?: boolean;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
 export interface AuthFormProps {

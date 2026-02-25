@@ -33,6 +33,7 @@ function AuthForm({
         {fields.map((field) => (
           <Input
             key={field.key}
+            {...field.inputProps}
             label={field.label}
             type={field.type}
             size="lg"
