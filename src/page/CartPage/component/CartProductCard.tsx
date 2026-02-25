@@ -66,7 +66,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
               >
                 <p className="font-orbit text-lg">-</p>
               </Button>
-              <p className="font-heading px-3">
+              <p className="font-heading px-3 min-w-12 text-center">
                 {item.qty}
               </p>
               <Button
