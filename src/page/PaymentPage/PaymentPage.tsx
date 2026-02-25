@@ -4,13 +4,16 @@ import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import OrderReceipt from "./component/OrderReceipt";
 import PaymentForm from "./component/PaymentForm";
 import { createOrder } from "../../features/order/orderSlice";
+import { getCartList } from "../../features/cart/cartSlice";
 import type { CardValue } from "../../types";
+import { cc_expires_format } from "../../utils/number";
 
 const PaymentPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { orderNum } = useAppSelector((state) => state.order);
-
+  const { cartList, totalPrice, loading: cartLoading } = useAppSelector((state) => state.cart);
+  
   const [cardValue, setCardValue] = useState<CardValue>({
     cvc: "",
     expiry: "",
@@ -29,32 +32,57 @@ const PaymentPage = () => {
   });
 
   useEffect(() => {
+    dispatch(getCartList());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!cartLoading && cartList?.length === 0) {
+      navigate("/cart");
+    }
+  }, [cartLoading, cartList, navigate]);
+
+  useEffect(() => {
     // 오더번호를 받으면 어디로 갈까?
   }, [orderNum]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // 오더 생성하기
+    const { firstName , lastName, contact, address, city, zip } = shipInfo;
+    dispatch(createOrder({
+      totalPrice,
+      shipTo: {address, city, zip},
+      contact: {firstName, lastName, contact},
+      orderList: cartList.map((item) => {
+        return {
+          productId: item.productId._id,
+          price: item.productId.price,
+          qty: item.qty,
+          size: item.size,
+        };
+      })
+    }));
   };
 
   const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //shipInfo에 값 넣어주기
+    const { name, value } = event.target;
+    setShipInfo({ ...shipInfo, [name]: value });
   };
 
   const handlePaymentInfoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //카드정보 넣어주기
+    const { name, value } = event.target;
+    if (name === "expiry") {
+      const newValue = cc_expires_format(value);
+      return setCardValue({ ...cardValue, [name]: newValue });
+    }
+    setCardValue({ ...cardValue, [name]: value });
   };
-
-  // if (cartList?.length === 0) {
-  //   navigate("/cart");
-  // }// 주문할 아이템이 없다면 주문하기로 안넘어가게 막음
 
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     setCardValue({ ...cardValue, focus: e.target.name });
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-7">
           <h2 className="text-2xl font-bold mb-4">배송 주소</h2>
