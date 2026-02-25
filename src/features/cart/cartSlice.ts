@@ -4,13 +4,22 @@ import { showToastMessage } from "../common/uiSlice";
 import type { CartItem, CartState } from "../../types/index";
 import { ApiError } from "../../utils/ApiError";
 
-const initialState: CartState = {
+interface PreviousQtyMap {
+  [id: string]: number;
+}
+
+interface CartStateWithOptimistic extends CartState {
+  previousQty: PreviousQtyMap;
+}
+
+const initialState: CartStateWithOptimistic = {
   loading: false,
   error: "",
   cartList: [],
   selectedItem: {},
   cartItemCount: 0,
   totalPrice: 0,
+  previousQty: {},
 };
 
 // Async thunk actions
@@ -162,17 +171,39 @@ const cartSlice = createSlice({
         state.error = action.payload || "상품 카드 조회 에러";
       })
       .addCase(updateQty.pending, (state, action) => {
-        state.loading = true;
+        // 즉시 UI 반영
+        const { id, value } = action.meta.arg;
+        const item = state.cartList.find(i => i._id === id);
+        if (item) {
+          state.previousQty[id] = item.qty;  // 이전 값 백업
+          item.qty = value;
+          state.totalPrice = state.cartList.reduce((total, i) => total + (i.productId.price * i.qty), 0);
+        }
       })
       .addCase(updateQty.fulfilled, (state, action) => {
         state.loading = false;
         state.error = "";
+
+        // 서버 응답으로 동기화
         state.cartList = action.payload;
         state.totalPrice = action.payload.reduce((total, item) => total + (item.productId.price * item.qty), 0);
+        
+        // 백업 데이터 정리
+        const { id } = action.meta.arg;
+        delete state.previousQty[id];
       })
       .addCase(updateQty.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "상품 수량 업데이트 에러";
+        
+        // 롤백
+        const { id } = action.meta.arg;
+        const item = state.cartList.find(i => i._id === id);
+        if (item && state.previousQty[id] !== undefined) {
+          item.qty = state.previousQty[id];
+          state.totalPrice = state.cartList.reduce((total, i) => total + (i.productId.price * i.qty), 0);
+        }
+        delete state.previousQty[id];
       })
       .addCase(deleteCartItem.pending, (state, action) => {
         state.loading = true;
