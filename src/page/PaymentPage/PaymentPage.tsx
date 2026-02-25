@@ -7,6 +7,8 @@ import { createOrder } from "../../features/order/orderSlice";
 import { getCartList } from "../../features/cart/cartSlice";
 import type { CardValue } from "../../types";
 import { cc_expires_format, phone_format } from "../../utils/number";
+import Input from "../../components/ui/atoms/input/Input";
+import Button from "../../components/ui/atoms/button/Button";
 
 const PaymentPage = () => {
   const dispatch = useAppDispatch();
@@ -88,15 +90,12 @@ const PaymentPage = () => {
     <div className="max-w-5xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-7">
-          <h2 className="text-2xl font-bold mb-4">배송 주소</h2>
+          <h2 className="text-xl font-bold font-monoplex mb-4">배송 주소</h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  성
-                </label>
-                <input
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <Input
+                  label="성"
                   type="text"
                   name="lastName"
                   onChange={handleFormChange}
@@ -105,11 +104,8 @@ const PaymentPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  이름
-                </label>
-                <input
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <Input
+                  label="이름"
                   type="text"
                   name="firstName"
                   onChange={handleFormChange}
@@ -120,12 +116,10 @@ const PaymentPage = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                연락처
-              </label>
-              <input
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                type="text"
+              <Input
+                label="연락처"
+                type="tel"
+                pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"
                 name="contact"
                 placeholder="010-xxx-xxxxx"
                 onChange={handleFormChange}
@@ -135,11 +129,8 @@ const PaymentPage = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                주소
-              </label>
-              <input
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              <Input
+                label="주소"
                 type="text"
                 name="address"
                 placeholder="Apartment, studio, or floor"
@@ -151,11 +142,8 @@ const PaymentPage = () => {
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  City
-                </label>
-                <input
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <Input
+                  label="City"
                   type="text"
                   name="city"
                   onChange={handleFormChange}
@@ -164,11 +152,8 @@ const PaymentPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Zip
-                </label>
-                <input
-                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <Input
+                  label="Zip"
                   type="text"
                   name="zip"
                   onChange={handleFormChange}
@@ -178,8 +163,13 @@ const PaymentPage = () => {
               </div>
             </div>
 
+            {/* OrderReceipt - 모바일에서 중간에 위치 */}
+            <div className="mb-4 lg:hidden">
+              <OrderReceipt />
+            </div>
+
             <div>
-              <h2 className="text-2xl font-bold mb-4">결제 정보</h2>
+              <h2 className="text-xl font-bold font-monoplex mb-4">결제 정보</h2>
               <PaymentForm
                 handleInputFocus={handleInputFocus}
                 cardValue={cardValue}
@@ -187,16 +177,20 @@ const PaymentPage = () => {
               />
             </div>
 
-            <button
+            <Button
+              variant="purple-gradient"
+              radius="md"
               type="submit"
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded font-medium transition-colors mt-4"
+              isFullWidth
+              size="lg"
+              className="text-white py-3 rounded font-monoplex mt-4"
             >
               결제하기
-            </button>
+            </Button>
           </form>
         </div>
 
-        <div className="lg:col-span-5">
+        <div className="lg:col-span-5 hidden lg:block">
           <OrderReceipt />
         </div>
       </div>

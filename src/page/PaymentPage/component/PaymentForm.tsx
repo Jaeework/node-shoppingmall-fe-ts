@@ -2,6 +2,7 @@ import { type FocusEvent, type ChangeEvent } from "react";
 import type { CardValue } from "../../../types";
 import Cards from "react-credit-cards-2";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
+import Input from "../../../components/ui/atoms/input/Input";
 
 interface PaymentFormProps {
   handleInputFocus: (e: FocusEvent<HTMLInputElement>) => void;
@@ -25,9 +26,8 @@ const PaymentForm = ({
           number={cardValue.number}
         />
       </div>
-      <div>
-        <input
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      <div className="flex flex-col gap-2">
+        <Input
           type="tel"
           name="number"
           placeholder="Card Number"
@@ -37,8 +37,7 @@ const PaymentForm = ({
           maxLength={16}
           value={cardValue.number}
         />
-        <input
-          className="w-full border border-gray-300 rounded px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <Input
           type="text"
           name="name"
           placeholder="Name"
@@ -48,8 +47,7 @@ const PaymentForm = ({
           value={cardValue.name}
         />
         <div className="grid grid-cols-2 gap-3">
-          <input
-            className="w-full border border-gray-300 rounded px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <Input
             type="text"
             name="expiry"
             placeholder="MM/DD"
@@ -59,8 +57,7 @@ const PaymentForm = ({
             value={cardValue.expiry}
             maxLength={7}
           />
-          <input
-            className="w-full border border-gray-300 rounded px-3 py-2 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <Input
             type="text"
             name="cvc"
             placeholder="CVC"
