@@ -74,6 +74,7 @@ export interface UserState {
   loginError: string | null;
   registrationError: string | null;
   success: boolean;
+  isInitialized: boolean;
 }
 
 export interface ProductState {

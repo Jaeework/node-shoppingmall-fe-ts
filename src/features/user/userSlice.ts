@@ -105,6 +105,7 @@ const initialState: UserState = {
   loginError: null,
   registrationError: null,
   success: false,
+  isInitialized: false,
 };
 
 const userSlice = createSlice({
@@ -146,6 +147,10 @@ const userSlice = createSlice({
       })
       .addCase(loginWithToken.fulfilled, (state, action) => {
         state.user = action.payload.user;
+        state.isInitialized = true;
+      })
+      .addCase(loginWithToken.rejected, (state) => {
+        state.isInitialized = true;
       });
   },
 });

@@ -7,9 +7,13 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ permissionLevel }) => {
-  const user = useAppSelector((state) => state.user.user);
+  const { user, isInitialized } = useAppSelector((state) => state.user);
   const isAuthenticated =
     user?.level === permissionLevel || user?.level === "admin";
+
+  if (!isInitialized) {
+    return null;
+  }
 
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
