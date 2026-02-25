@@ -26,6 +26,7 @@ const signInFields = [
     type: "password",
     placeholder: "password",
     required: true,
+    inputProps: {autoComplete: "current-password"},
   },
 ];
 
@@ -78,12 +79,6 @@ function SignInForm() {
             />
           </GoogleOAuthProvider>
         </div>
-      </div>
-
-      <div className="w-full max-w-md mx-auto px-8 bg-gray-100 p-4 rounded text-center">
-        <h3 className="font-bold text-gray-700 mb-2">테스트 계정</h3>
-        <p className="text-sm text-gray-600">email: hong@email.com</p>
-        <p className="text-sm text-gray-600">password: asdf</p>
       </div>
     </div>
   );

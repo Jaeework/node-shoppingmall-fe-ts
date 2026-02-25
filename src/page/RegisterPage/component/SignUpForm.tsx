@@ -86,6 +86,7 @@ function SignUpForm() {
           size="lg"
           placeholder="password"
           required
+          autoComplete="new-password"
           onValueChange={handleChange("password")}
         />
 
@@ -96,6 +97,7 @@ function SignUpForm() {
             size="lg"
             placeholder="re-enter password"
             required
+            autoComplete="new-password"
             onValueChange={handleChange("confirmPassword")}
           />
           {passwordError && (
