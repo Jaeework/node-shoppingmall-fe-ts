@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useAppDispatch } from "../../../features/hooks";
@@ -14,6 +14,21 @@ interface CartProductCardProps {
 const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
   const dispatch = useAppDispatch();
   const [stockError, setStockError] = useState<string | null>(null);
+  const [localQty, setLocalQty] = useState<number | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const displayQty = localQty ?? item.qty;
+
+  const debouncedUpdateQty = useCallback((id: string, value: number) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      dispatch(updateQty({ id, value })).then(() => {
+        setLocalQty(null);
+      });
+    }, 300);
+  }, [dispatch]);
 
   const handleQtyChange = (id: string, value: number) => {
     if (value <= 0) return;
@@ -26,7 +41,8 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
     }
 
     setStockError(null);
-    dispatch(updateQty({ id, value }));
+    setLocalQty(value);  // 즉시 UI 반영
+    debouncedUpdateQty(id, value);  // 300ms 후 API 호출
   };
 
   const deleteCart = (id: string) => {
@@ -62,12 +78,12 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
                 variant="outline"
                 radius="none"
                 className="text-[var(--y2k-black)]"
-                onClick={() => handleQtyChange(item._id, Number(item.qty - 1))}
+                onClick={() => handleQtyChange(item._id, displayQty - 1)}
               >
                 <p className="font-orbit text-lg">-</p>
               </Button>
               <p className="font-heading px-3 min-w-12 text-center">
-                {item.qty}
+                {displayQty}
               </p>
               <Button
                 type="button"
@@ -75,7 +91,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
                 variant="outline"
                 radius="none"
                 className="text-[var(--y2k-black)]"
-                onClick={() => handleQtyChange(item._id, Number(item.qty + 1))}
+                onClick={() => handleQtyChange(item._id, displayQty + 1)}
               >
                 <p className="font-orbit text-lg">+</p>
               </Button>
@@ -85,7 +101,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
             </p>
           </div>
           <p className="text-md font-heading text-[var(--y2k-purple-deep)]">
-            ₩ {currencyFormat(item.productId.price * item.qty)}
+            ₩ {currencyFormat(item.productId.price * displayQty)}
           </p>
         </div>
       </div>
