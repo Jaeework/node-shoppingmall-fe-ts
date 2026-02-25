@@ -13,7 +13,7 @@ const CartPage: React.FC = () => {
     dispatch(getCartList());
   }, []);
 
-  if (loading) {
+  if (loading && cartList.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-[400px] lg:col-span-12">
         <LoaderSpinner />
