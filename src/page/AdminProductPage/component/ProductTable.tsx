@@ -1,5 +1,6 @@
 import Button from "../../../components/ui/atoms/button/Button";
 import type { Product } from "../../../types";
+import { currencyFormat } from "../../../utils/number";
 
 interface ProductTableProps {
   header: string[];
@@ -7,11 +8,6 @@ interface ProductTableProps {
   deleteItem: (product: Product) => void;
   openEditForm: (product: Product) => void;
 }
-
-const currencyFormat = (value: number) => {
-  const number = value !== undefined ? value : 0;
-  return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-};
 
 const ProductTable = ({ header, data, deleteItem, openEditForm }: ProductTableProps) => {
   const productList: Product[] = Array.isArray(data) ? data : [];

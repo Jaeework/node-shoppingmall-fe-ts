@@ -2,16 +2,12 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../features/hooks";
 import { ORDER_STATUS } from "../../../constants/order.constants";
 import { updateOrder } from "../../../features/order/orderSlice";
+import { currencyFormat } from "../../../utils/number";
 
 interface OrderDetailDialogProps {
   open: boolean;
   handleClose: () => void;
 }
-
-const currencyFormat = (value: number) => {
-  const number = value !== undefined ? value : 0;
-  return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-};
 
 const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
   const dispatch = useAppDispatch();

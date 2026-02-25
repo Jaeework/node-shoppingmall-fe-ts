@@ -1,14 +1,10 @@
 import type { Order } from "../../../types";
 import { badgeBg } from "../../../constants/order.constants";
+import { currencyFormat } from "../../../utils/number";
 
 interface OrderStatusCardProps {
   orderItem: Order;
 }
-
-const currencyFormat = (value: number) => {
-  const number = value !== undefined ? value : 0;
-  return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-};
 
 const OrderStatusCard = ({ orderItem }: OrderStatusCardProps) => {
   return (

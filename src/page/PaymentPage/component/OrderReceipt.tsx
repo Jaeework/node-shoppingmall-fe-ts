@@ -1,16 +1,12 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../features/hooks";
 import Button from "../../../components/ui/atoms/button/Button";
+import { currencyFormat } from "../../../utils/number";
 
 const OrderReceipt = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { cartList, totalPrice } = useAppSelector((state) => state.cart);
-
-  const currencyFormat = (value: number) => {
-    const number = value !== undefined ? value : 0;
-    return number.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  };
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
