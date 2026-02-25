@@ -6,7 +6,7 @@ import PaymentForm from "./component/PaymentForm";
 import { createOrder } from "../../features/order/orderSlice";
 import { getCartList } from "../../features/cart/cartSlice";
 import type { CardValue } from "../../types";
-import { cc_expires_format } from "../../utils/number";
+import { cc_expires_format, phone_format } from "../../utils/number";
 
 const PaymentPage = () => {
   const dispatch = useAppDispatch();
@@ -65,6 +65,9 @@ const PaymentPage = () => {
 
   const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
+    if (name === "contact") {
+      return setShipInfo({ ...shipInfo, [name]: phone_format(value) });
+    }
     setShipInfo({ ...shipInfo, [name]: value });
   };
 
