@@ -4,6 +4,7 @@ import api from "../../utils/api";
 import { showToastMessage } from "../common/uiSlice";
 import type { Order, OrderState } from "../../types/index";
 import { ApiError } from "../../utils/ApiError";
+import { getCartQty } from "../cart/cartSlice";
 
 const initialState: OrderState = {
   orderList: [],
@@ -25,6 +26,7 @@ export const createOrder = createAsyncThunk<
     try {
       const response = await api.post("/order", payload);
       if (response.status !== 200) throw new ApiError(response.data.error);
+      dispatch(getCartQty());
       return response.data.orderNum;
     } catch (error) {
       const errorMessage = error instanceof ApiError && error.isUserError ? error.message : "주문 정보를 생성하지 못했습니다. 관리자에 문의하세요.";
