@@ -94,7 +94,7 @@ export interface CartState {
   selectedItem: CartItem | Record<string, never>;
   cartItemCount: number;
   totalPrice: number;
-  isQtyUpdate: boolean;
+  updatingItemId: string | null;
 }
 
 export interface OrderState {

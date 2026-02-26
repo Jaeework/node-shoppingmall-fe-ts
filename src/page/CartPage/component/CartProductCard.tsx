@@ -10,10 +10,10 @@ import LoaderSpinner from "../../../components/ui/atoms/loader-spinner/LoaderSpi
 
 interface CartProductCardProps {
   item: CartItem;
-  isQtyUpdate: boolean,
+  updatingItemId: string | null;
 }
 
-const CartProductCard: React.FC<CartProductCardProps> = ({ item, isQtyUpdate }) => {
+const CartProductCard: React.FC<CartProductCardProps> = ({ item, updatingItemId }) => {
   const dispatch = useAppDispatch();
   const [stockError, setStockError] = useState<string | null>(null);
 
@@ -68,12 +68,12 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, isQtyUpdate }) 
                 radius="none"
                 className="text-[var(--y2k-black)]"
                 onClick={() => handleQtyChange(item._id, item.qty - 1)}
-                disabled={isQtyUpdate}
+                disabled={updatingItemId === item._id}
               >
                 <p className="font-orbit text-lg">-</p>
               </Button>
               <div className="font-heading px-3 w-12 h-8 text-center flex justify-center items-center">
-                {item && isQtyUpdate ? (
+                {updatingItemId === item._id ? (
                   <LoaderSpinner width="25" height="25" />
                 ) : item.qty}
               </div>
@@ -84,7 +84,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, isQtyUpdate }) 
                 radius="none"
                 className="text-[var(--y2k-black)]"
                 onClick={() => handleQtyChange(item._id, item.qty + 1)}
-                disabled={isQtyUpdate}
+                disabled={updatingItemId === item._id}
               >
                 <p className="font-orbit text-lg">+</p>
               </Button>
