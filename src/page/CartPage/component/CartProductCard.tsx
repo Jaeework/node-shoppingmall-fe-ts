@@ -6,12 +6,14 @@ import { updateQty, deleteCartItem } from "../../../features/cart/cartSlice";
 import { currencyFormat } from "../../../utils/number";
 import type { CartItem } from "../../../types/index";
 import Button from "../../../components/ui/atoms/button/Button";
+import LoaderSpinner from "../../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 interface CartProductCardProps {
   item: CartItem;
+  isQtyUpdate: boolean,
 }
 
-const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
+const CartProductCard: React.FC<CartProductCardProps> = ({ item, isQtyUpdate }) => {
   const dispatch = useAppDispatch();
   const [stockError, setStockError] = useState<string | null>(null);
 
@@ -44,12 +46,15 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
       <div className="flex flex-col flex-1 justify-between">
         <div className="flex justify-between items-start">
           <h3 className="w-0 flex-1 font-heading text-lg sm:text-xl text-base truncate text-ellipsis">{item.productId.name}</h3>
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="md"
             onClick={() => deleteCart(item._id)}
             className="text-gray-400 hover:text-red-500 transition-colors p-1"
           >
             <FontAwesomeIcon icon={faTrash} className="text-[var(--y2k-purple-deep)]" />
-          </button>
+          </Button>
         </div>
         <p className="text-sm text-gray-500 font-orbit">SIZE: {item.size.toUpperCase()}</p>
         <p className="font-orbit text-xs mt-1">₩ {currencyFormat(item.productId.price)}</p>
@@ -66,9 +71,11 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item }) => {
               >
                 <p className="font-orbit text-lg">-</p>
               </Button>
-              <p className="font-heading px-3 min-w-12 text-center">
-                {item.qty}
-              </p>
+              <div className="font-heading px-3 w-12 h-8 text-center flex justify-center items-center">
+                {item && isQtyUpdate ? (
+                  <LoaderSpinner width="25" height="25" />
+                ) : item.qty}
+              </div>
               <Button
                 type="button"
                 size="sm"

@@ -11,6 +11,7 @@ const initialState: CartState = {
   selectedItem: {},
   cartItemCount: 0,
   totalPrice: 0,
+  isQtyUpdate: false,
 };
 
 // Async thunk actions
@@ -163,15 +164,18 @@ const cartSlice = createSlice({
       })
       .addCase(updateQty.pending, (state) => {
         state.loading = true;
+        state.isQtyUpdate = true;
       })
       .addCase(updateQty.fulfilled, (state, action) => {
         state.loading = false;
+        state.isQtyUpdate = false;
         state.error = "";
         state.cartList = action.payload;
         state.totalPrice = action.payload.reduce((total, item) => total + (item.productId.price * item.qty), 0);
       })
       .addCase(updateQty.rejected, (state, action) => {
         state.loading = false;
+        state.isQtyUpdate = false;
         state.error = action.payload || "상품 수량 업데이트 에러";
       })
       .addCase(deleteCartItem.pending, (state, action) => {

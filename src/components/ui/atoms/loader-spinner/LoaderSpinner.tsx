@@ -1,16 +1,20 @@
 import { LineWave } from "react-loader-spinner";
 
-function LoaderSpinner() {
+interface LoaderSpinnerProps {
+  height?: string;
+  width?: string;
+}
+
+function LoaderSpinner({height, width}: LoaderSpinnerProps) {
+  
   return (
-    <div className="flex justify-center items-center flex-1">
-      <LineWave
-        visible
-        height="100"
-        width="100"
-        ariaLabel="loading"
-        color="#b026ff"
-      />
-    </div>
+    <LineWave
+      visible
+      height={height || 100}
+      width={width || 100}
+      ariaLabel="loading"
+      color="#b026ff"
+    />
   );
 }
 

@@ -7,7 +7,7 @@ import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinne
 
 const CartPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { cartList, loading } = useAppSelector((state) => state.cart);
+  const { cartList, loading, isQtyUpdate } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(getCartList());
@@ -31,7 +31,7 @@ const CartPage: React.FC = () => {
             <div className="flex flex-col gap-4">
               {
                 cartList.map((item) => (
-                  <CartProductCard key={item._id} item={item} />
+                  <CartProductCard key={item._id} item={item} isQtyUpdate={isQtyUpdate} />
                 ))
               }
             </div>
