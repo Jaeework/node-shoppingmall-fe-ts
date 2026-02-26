@@ -40,9 +40,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </div>
       ) : (
         <div className="w-full flex flex-col min-h-screen">
-          <div className="w-full max-w-[1500px] mx-auto">
+          <div className="w-full border-b sticky top-0 z-30 bg-[var(--background)]">
             <Header user={user} />
-            <main className="w-full p-4 flex-1 flex justify-center">
+          </div>
+          <div className="w-full flex-1 relative before:absolute before:inset-0 before:-z-10 before:bg-[length:100%_20px,20px_100%] before:bg-[linear-gradient(to_bottom,transparent_19px,#e5e5e5_19px),linear-gradient(to_right,transparent_19px,#e5e5e5_19px)]">
+            <main className="w-full max-w-[1500px] mx-auto p-4 flex-1 flex justify-center">
               {children}
             </main>
           </div>

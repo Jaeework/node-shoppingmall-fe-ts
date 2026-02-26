@@ -22,7 +22,7 @@ const LandingPage: React.FC = () => {
           <LoaderSpinner />
         </div>
       ) : productList.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in-up">
           {productList.map((item) => (
             <ProductCard key={item._id} item={item} />
           ))}

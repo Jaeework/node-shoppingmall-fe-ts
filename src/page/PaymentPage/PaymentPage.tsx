@@ -88,7 +88,7 @@ const PaymentPage = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto py-4">
       {loading ? (
         <div className="fixed inset-0 bg-black/30 z-10 flex justify-center items-center min-h-[400px]">
           <LoaderSpinner />

@@ -43,14 +43,14 @@ const ProductDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="max-w-5xl mx-auto py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up">
         {/* Product image */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4">
           <img
             src={selectedProduct.image}
             alt={selectedProduct.name}
-            className="w-full rounded-lg border border-gray-200 shadow-lg"
+            className="w-full rounded-lg border border-[var(--y2k-magenta-vivid)] shadow-lg"
           />
           <div>
             {/* Size dropdown */}
@@ -58,8 +58,8 @@ const ProductDetailPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setDropdownOpen((prev) => !prev)}
-                className={`w-full border rounded px-3 py-2 text-left flex justify-between items-center text-sm transition-colors ${
-                  sizeError ? "border-red-500" : "border-gray-300 hover:border-gray-500"
+                className={`w-full border rounded px-3 py-2 text-left flex justify-between items-center text-sm bg-white transition-colors ${
+                  sizeError ? "border-red-500" : "border-[var(--y2k-purple)] hover:border-[var(--y2k-magenta)]"
                 }`}
               >
                 <span className="font-monoplex">{size === "" ? "사이즈 선택" : size.toUpperCase()}</span>
@@ -94,7 +94,7 @@ const ProductDetailPage: React.FC = () => {
 
             <Button
               type="button"
-              variant="black"
+              variant="purple-gradient"
               radius="md"
               size="lg"
               isFullWidth
@@ -107,7 +107,7 @@ const ProductDetailPage: React.FC = () => {
         </div>
 
         {/* Product info */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 border border-[var(--y2k-magenta-vivid)] rounded-md p-4 bg-white animate-fade-in-up">
           <h1 className="text-2xl font-heading">{selectedProduct.name}</h1>
           <p className="text-xl text-gray-700 font-heading">₩ {currencyFormat(selectedProduct.price)}</p>
           <p className="text-gray-600 text-sm font-monoplex whitespace-pre-line">{selectedProduct.description}</p>

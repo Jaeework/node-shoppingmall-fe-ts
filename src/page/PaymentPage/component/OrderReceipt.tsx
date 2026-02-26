@@ -9,7 +9,7 @@ const OrderReceipt = () => {
   const { cartList, totalPrice } = useAppSelector((state) => state.cart);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="bg-white border border-gray-400 rounded-lg p-6">
       <h3 className="text-xl font-bold mb-4 font-monoplex">주문 내역</h3>
       <ul>
         {cartList.map((item, index) => (

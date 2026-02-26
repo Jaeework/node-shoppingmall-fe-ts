@@ -53,7 +53,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, updatingItemId 
             onClick={() => deleteCart(item._id)}
             className="text-gray-400 hover:text-red-500 transition-colors p-1"
           >
-            <FontAwesomeIcon icon={faTrash} className="text-[var(--y2k-purple-deep)]" />
+            <FontAwesomeIcon icon={faTrash} className="text-[var(--y2k-magenta-vivid)]" />
           </Button>
         </div>
         <p className="text-sm text-gray-500 font-orbit">SIZE: {item.size.toUpperCase()}</p>
@@ -93,7 +93,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, updatingItemId 
               {stockError || "\u00A0"}
             </p>
           </div>
-          <p className="text-md font-heading text-[var(--y2k-purple-deep)]">
+          <p className="text-md font-heading text-[var(--y2k-black)]">
             ₩ {currencyFormat(item.productId.price * item.qty)}
           </p>
         </div>

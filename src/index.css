@@ -67,7 +67,7 @@
 }
 
 :root {
-  --background: #f0f0f0;
+  --background: #fff;
   --foreground: #171717;
   --y2k-purple: #7c4dff;
   --y2k-purple-deep: #7000ff;
@@ -84,6 +84,7 @@
   html {
     overflow-y: scroll;
     scrollbar-width: none; /* Firefox */
+    overflow-x: hidden;
   }
   html::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Edge */
@@ -96,7 +97,6 @@
     /* max-width: 1280px; */
     margin-left: auto;
     margin-right: auto;
-    overflow-x: hidden;
     min-height: 100vh;
   }
 }
@@ -116,5 +116,19 @@
       system-ui,
       -apple-system,
       sans-serif;
+  }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -22,13 +22,13 @@ const CartPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto py-4">
       <h1 className="text-2xl font-semibold font-monoplex italic mb-6">BAG</h1>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Cart items */}
         <div className="lg:col-span-7">
           {cartList.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 animate-fade-in-up">
               {
                 cartList.map((item) => (
                   <CartProductCard key={item._id} item={item} updatingItemId={updatingItemId} />
