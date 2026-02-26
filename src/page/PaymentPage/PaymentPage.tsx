@@ -9,11 +9,12 @@ import type { CardValue } from "../../types";
 import { cc_expires_format, phone_format } from "../../utils/number";
 import Input from "../../components/ui/atoms/input/Input";
 import Button from "../../components/ui/atoms/button/Button";
+import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 const PaymentPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { orderNum } = useAppSelector((state) => state.order);
+  const { orderNum, loading } = useAppSelector((state) => state.order);
   const { cartList, totalPrice, loading: cartLoading } = useAppSelector((state) => state.cart);
   
   const [cardValue, setCardValue] = useState<CardValue>({
@@ -88,6 +89,11 @@ const PaymentPage = () => {
 
   return (
     <div className="max-w-5xl mx-auto">
+      {loading ? (
+        <div className="fixed inset-0 bg-black/30 z-10 flex justify-center items-center min-h-[400px]">
+          <LoaderSpinner />
+        </div>
+      ) : ""}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-7">
           <h2 className="text-xl font-bold font-monoplex mb-4">배송 주소</h2>
