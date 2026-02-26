@@ -68,6 +68,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, isQtyUpdate }) 
                 radius="none"
                 className="text-[var(--y2k-black)]"
                 onClick={() => handleQtyChange(item._id, item.qty - 1)}
+                disabled={isQtyUpdate}
               >
                 <p className="font-orbit text-lg">-</p>
               </Button>
@@ -83,6 +84,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, isQtyUpdate }) 
                 radius="none"
                 className="text-[var(--y2k-black)]"
                 onClick={() => handleQtyChange(item._id, item.qty + 1)}
+                disabled={isQtyUpdate}
               >
                 <p className="font-orbit text-lg">+</p>
               </Button>
