@@ -1,15 +1,17 @@
 import Button from "../../../components/ui/atoms/button/Button";
 import type { Product } from "../../../types";
 import { currencyFormat } from "../../../utils/number";
+import LoaderSpinner from "../../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 interface ProductTableProps {
   header: string[];
   data: Product[] | string;
   deleteItem: (product: Product) => void;
   openEditForm: (product: Product) => void;
+  loading?: boolean;
 }
 
-const ProductTable = ({ header, data, deleteItem, openEditForm }: ProductTableProps) => {
+const ProductTable = ({ header, data, deleteItem, openEditForm, loading = false }: ProductTableProps) => {
   const productList: Product[] = Array.isArray(data) ? data : [];
 
   return (
@@ -28,7 +30,18 @@ const ProductTable = ({ header, data, deleteItem, openEditForm }: ProductTablePr
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200 font-monoplex">
-          {productList.length > 0 ? (
+          {loading ? (
+            <tr>
+              <td
+                colSpan={header.length}
+                className="px-4 py-8 text-center"
+              >
+                <div className="flex justify-center">
+                  <LoaderSpinner />
+                </div>
+              </td>
+            </tr>
+          ) : productList.length > 0 ? (
             productList.map((item, index) => (
               <tr key={item._id}>
                 <td className="px-4 py-3">{index}</td>

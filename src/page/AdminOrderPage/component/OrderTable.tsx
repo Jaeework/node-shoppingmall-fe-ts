@@ -1,14 +1,16 @@
 import type { Order } from "../../../types";
 import { badgeBg } from "../../../constants/order.constants";
 import { currencyFormat } from "../../../utils/number";
+import LoaderSpinner from "../../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 interface OrderTableProps {
   header: string[];
   data: Order[];
   openEditForm: (order: Order) => void;
+  loading?: boolean;
 }
 
-const OrderTable = ({ header, data, openEditForm }: OrderTableProps) => {
+const OrderTable = ({ header, data, openEditForm, loading = false }: OrderTableProps) => {
   const orderList: Order[] = Array.isArray(data) ? data : [];
 
   return (
@@ -27,7 +29,18 @@ const OrderTable = ({ header, data, openEditForm }: OrderTableProps) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200 font-monoplex">
-          {orderList.length > 0 ? (
+          {loading ? (
+            <tr>
+              <td
+                colSpan={header.length}
+                className="px-4 py-8 text-center"
+              >
+                <div className="flex justify-center">
+                  <LoaderSpinner />
+                </div>
+              </td>
+            </tr>
+          ) : orderList.length > 0 ? (
             orderList.map((item, index) => (
               <tr
                 key={item._id}

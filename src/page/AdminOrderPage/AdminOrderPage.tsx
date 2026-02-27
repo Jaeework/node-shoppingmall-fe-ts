@@ -20,7 +20,7 @@ const AdminOrderPage = () => {
   const navigate = useNavigate();
   const [query] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { orderList, totalPageNum } = useAppSelector((state) => state.order);
+  const { orderList, totalPageNum, loading } = useAppSelector((state) => state.order);
 
   const [searchQuery, setSearchQuery] = useState<AdminOrderSearchQuery>({
     page: Number(query.get("page")) || 1,
@@ -88,6 +88,7 @@ const AdminOrderPage = () => {
         header={tableHeader}
         data={orderList}
         openEditForm={openEditForm}
+        loading={loading}
       />
 
       <ReactPaginate

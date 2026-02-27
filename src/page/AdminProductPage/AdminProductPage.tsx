@@ -13,7 +13,6 @@ import DeleteItemDialog from "./component/DeleteItemDialog";
 import ProductTable from "./component/ProductTable";
 import Button from "../../components/ui/atoms/button/Button";
 import SearchBox from "../../components/layout/SearchBox";
-import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 const AdminProductPage = () => {
   const [query, setQuery] = useSearchParams();
@@ -110,18 +109,13 @@ const AdminProductPage = () => {
         <h1 className="font-heading text-[var(--background)]">Add New Item +</h1>
       </Button>
 
-      {loading ? (
-        <div className="flex justify-center items-center min-h-[200px]">
-          <LoaderSpinner />
-        </div>
-      ) : (
-        <ProductTable
-          header={tableHeader}
-          data={productList}
-          deleteItem={openDeleteDialog}
-          openEditForm={openEditForm}
-        />
-      )}
+      <ProductTable
+        header={tableHeader}
+        data={productList}
+        deleteItem={openDeleteDialog}
+        openEditForm={openEditForm}
+        loading={loading}
+      />
 
       <ReactPaginate
         nextLabel="next >"
