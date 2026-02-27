@@ -8,8 +8,8 @@ interface OrderStatusCardProps {
 
 const OrderStatusCard = ({ orderItem }: OrderStatusCardProps) => {
   return (
-    <div className="flex gap-4 border border-[var(--y2k-purple)] p-4 mb-4 items-center bg-[var(--background)] relative
-      after:content-[''] after:absolute after:inset-0 after:bg-[--y2k-purple] after:translate-x-1 after:translate-y-1 after:-z-10
+    <div className="flex gap-4 border border-[var(--y2k-purple-vivid)] p-4 mb-4 items-center bg-[var(--background)] relative
+      after:content-[''] after:absolute after:inset-0 after:bg-[--y2k-purple-vivid] after:translate-x-1 after:translate-y-1 after:-z-10
     ">
       <div>
         <img

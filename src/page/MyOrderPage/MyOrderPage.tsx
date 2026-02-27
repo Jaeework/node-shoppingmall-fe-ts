@@ -40,7 +40,7 @@ const MyPage = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-8 animate-fade-in-up">
       {orderList.map((item) => (
         <OrderStatusCard orderItem={item} key={item._id} />
       ))}
