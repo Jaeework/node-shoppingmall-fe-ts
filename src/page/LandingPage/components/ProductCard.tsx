@@ -9,6 +9,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const navigate = useNavigate();
+  const isOutOfStock = Object.values(item.stock).every((qty) => qty === 0);
 
   return (
     <div
@@ -16,6 +17,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
         border border-[--y2k-silver] after:content-[''] after:absolute after:inset-0 after:bg-[--y2k-black] after:translate-x-1 after:translate-y-1 after:-z-10"
       onClick={() => navigate(`/product/${item._id}`)}
     >
+      {isOutOfStock && (
+        <span className="text-xs p-1 bg-[var(--y2k-black)] text-white font-heading absolute top-2 right-2">SOLD OUT</span>
+      )}
       <img
         src={item.image}
         alt={item.name}

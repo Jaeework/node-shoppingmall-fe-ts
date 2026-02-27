@@ -15,15 +15,17 @@ const LandingPage: React.FC = () => {
     dispatch(getProductList({ name }));
   }, [query, dispatch]);
 
+  const activeProducts = productList.filter((item) => item.status === "active");
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {loading ? (
         <div className="flex justify-center items-center min-h-[400px]">
           <LoaderSpinner />
         </div>
-      ) : productList.length > 0 ? (
+      ) : activeProducts.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in-up">
-          {productList.map((item) => (
+          {activeProducts.map((item) => (
             <ProductCard key={item._id} item={item} />
           ))}
         </div>
