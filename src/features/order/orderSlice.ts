@@ -24,7 +24,7 @@ export const createOrder = createAsyncThunk<
   "order/createOrder",
   async (payload, { dispatch, rejectWithValue }) => {
     try {
-      const response = await api.post("/order", payload);
+      const response = await api.post("/orders", payload);
       if (response.status !== 200) throw new ApiError(response.data.error);
       dispatch(getCartQty());
       return response.data.orderNum;
@@ -41,9 +41,24 @@ export const getOrder = createAsyncThunk(
   async (_, { rejectWithValue, dispatch }) => {}
 );
 
-export const getOrderList = createAsyncThunk(
+export const getOrderList = createAsyncThunk<
+  { data: Order[]; totalPageNum: number },
+  { page?: number; ordernum?: string },
+  { rejectValue: string }
+>(
   "order/getOrderList",
-  async (query: { page?: number; ordernum?: string }, { rejectWithValue, dispatch }) => {}
+  async (query, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.get("/orders", { params: query });
+      if (response.status !== 200) throw new ApiError(response.data.error);
+      return response.data;
+    } catch (error) {
+      if (error instanceof ApiError && error.isUserError) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("주문 목록을 불러오지 못했습니다. 관리자에 문의하세요.");
+    }
+  }
 );
 
 export const updateOrder = createAsyncThunk(
@@ -72,6 +87,19 @@ const orderSlice = createSlice({
       .addCase(createOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "주문 정보 생성 오류";
+      })
+      .addCase(getOrderList.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getOrderList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.orderList = action.payload.data;
+        state.totalPageNum = action.payload.totalPageNum;
+      })
+      .addCase(getOrderList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "주문 목록 조회 에러";
       });
   },
 });

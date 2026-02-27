@@ -9,6 +9,7 @@ import {
 import type { Order } from "../../types";
 import OrderDetailDialog from "./component/OrderDetailDialog";
 import OrderTable from "./component/OrderTable";
+import Input from "../../components/ui/atoms/input/Input";
 
 interface AdminOrderSearchQuery {
   page: number;
@@ -68,11 +69,10 @@ const AdminOrderPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="mb-4 flex justify-center">
-        <input
+      <div className="mb-4 flex justify-center max-w-lg">
+        <Input
           type="text"
-          placeholder="오더번호"
-          className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+          placeholder="오더번호로 검색"
           value={searchQuery.ordernum}
           onChange={(e) =>
             setSearchQuery({
@@ -96,9 +96,9 @@ const AdminOrderPage = () => {
         pageRangeDisplayed={5}
         pageCount={totalPageNum}
         forcePage={Number(searchQuery.page) - 1}
-        previousLabel="< previous"
+        previousLabel="< prev"
         renderOnZeroPageCount={null}
-        containerClassName="flex gap-1 justify-center mt-6 flex-wrap"
+        containerClassName="flex gap-1 justify-center mt-6 flex-wrap font-heading"
         pageClassName="page-item"
         pageLinkClassName="px-3 py-1 border rounded text-sm hover:bg-gray-100"
         activeClassName="active [&>a]:bg-gray-900 [&>a]:text-white [&>a]:border-gray-900"

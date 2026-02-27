@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../features/hooks";
 import { ORDER_STATUS } from "../../../constants/order.constants";
 import { updateOrder } from "../../../features/order/orderSlice";
 import { currencyFormat } from "../../../utils/number";
+import Button from "../../../components/ui/atoms/button/Button";
 
 interface OrderDetailDialogProps {
   open: boolean;
@@ -34,55 +35,72 @@ const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-screen overflow-y-auto">
         <div className="flex justify-between items-center px-6 py-4 border-b">
-          <h2 className="text-lg font-semibold">Order Detail</h2>
-          <button
-            className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+          <h2 className="text-lg font-heading">Order Detail</h2>
+          <Button
+            type="button"
             onClick={handleClose}
+            variant="ghost"
           >
-            &times;
-          </button>
+            <span
+              className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+            >
+              &times;
+            </span>
+          </Button>
         </div>
 
         <div className="px-6 py-4">
           <p className="mb-1">
-            <span className="font-medium">예약번호:</span> {selectedOrder.orderNum}
+            <span className="font-heading">예약번호:</span>{" "}
+            <span className="font-monoplex">
+              {selectedOrder.orderNum}
+            </span>
           </p>
           <p className="mb-1">
-            <span className="font-medium">주문날짜:</span>{" "}
-            {selectedOrder.createdAt.slice(0, 10)}
+            <span className="font-heading">주문날짜:</span>{" "}
+            <span className="font-monoplex">
+              {selectedOrder.createdAt.slice(0, 10)}
+            </span>
           </p>
           <p className="mb-1">
-            <span className="font-medium">이메일:</span> {selectedOrder.userId.email}
+            <span className="font-heading">이메일:</span>{" "}
+            <span className="font-monoplex">
+              {selectedOrder.userId.email}
+            </span>
           </p>
           <p className="mb-1">
-            <span className="font-medium">주소:</span>{" "}
-            {selectedOrder.shipTo.address + " " + selectedOrder.shipTo.city}
+            <span className="font-heading">주소:</span>{" "}
+            <span className="font-monoplex">
+              {selectedOrder.shipTo.address + " " + selectedOrder.shipTo.city}
+            </span>
           </p>
           <p className="mb-4">
-            <span className="font-medium">연락처:</span>{" "}
-            {`${
-              selectedOrder.contact.firstName + selectedOrder.contact.lastName
-            } ${selectedOrder.contact.contact}`}
+            <span className="font-heading">연락처:</span>{" "}
+            <span className="font-monoplex">
+              {`${
+                selectedOrder.contact.firstName + selectedOrder.contact.lastName
+              } ${selectedOrder.contact.contact}`}
+            </span>
           </p>
 
-          <p className="font-medium mb-2">주문내역</p>
+          <p className="font-orbit mb-2">주문내역</p>
           <div className="overflow-x-auto mb-4">
             <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 font-heading">
                 <tr>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-3 py-2 text-left text-xs text-gray-500 uppercase">
                     ID
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-3 py-2 text-left text-xs text-gray-500 uppercase">
                     Name
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-3 py-2 text-left text-xs text-gray-500 uppercase">
                     Unit Price
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-3 py-2 text-left text-xs text-gray-500 uppercase">
                     Qty
                   </th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-3 py-2 text-left text-xs text-gray-500 uppercase">
                     Price
                   </th>
                 </tr>
@@ -90,7 +108,7 @@ const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {selectedOrder.items.length > 0 &&
                   selectedOrder.items.map((item) => (
-                    <tr key={item._id}>
+                    <tr key={item._id} className="font-monoplex">
                       <td className="px-3 py-2 text-xs">{item._id}</td>
                       <td className="px-3 py-2">{item.productId.name}</td>
                       <td className="px-3 py-2">₩ {currencyFormat(item.price)}</td>
@@ -100,11 +118,11 @@ const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
                       </td>
                     </tr>
                   ))}
-                <tr>
-                  <td colSpan={4} className="px-3 py-2 font-medium">
+                <tr className="font-heading">
+                  <td colSpan={3} className="px-3 py-2 font-medium">
                     총계:
                   </td>
-                  <td className="px-3 py-2 font-medium">
+                  <td colSpan={2} className="px-3 py-2 font-medium">
                     ₩ {currencyFormat(selectedOrder.totalPrice)}
                   </td>
                 </tr>
@@ -113,11 +131,11 @@ const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-heading text-gray-700 mb-1">
               Status
             </label>
             <select
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full font-monoplex border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               value={orderStatus}
               onChange={handleStatusChange}
             >
@@ -130,18 +148,24 @@ const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
           </div>
 
           <div className="flex justify-end gap-2">
-            <button
-              className="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors"
+            <Button
+              type="button"
+              variant="outline"
+              radius="lg"
               onClick={handleClose}
             >
-              닫기
-            </button>
-            <button
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm transition-colors"
+              <span className="text-[var(--y2k-black)] font-heading">
+                닫기
+              </span>
+            </Button>
+            <Button
+              radius="lg"
               onClick={submitStatus}
             >
-              저장
-            </button>
+              <span className="text-[var(--background)] font-heading">
+                저장
+              </span>
+            </Button>
           </div>
         </div>
       </div>

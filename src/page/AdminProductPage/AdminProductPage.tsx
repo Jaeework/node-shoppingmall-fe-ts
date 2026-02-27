@@ -129,7 +129,7 @@ const AdminProductPage = () => {
         pageRangeDisplayed={5}
         pageCount={totalPageNum}
         forcePage={page - 1}
-        previousLabel="< previous"
+        previousLabel="< prev"
         renderOnZeroPageCount={null}
         containerClassName="flex gap-1 justify-center mt-6 flex-wrap font-heading"
         pageClassName="page-item"
