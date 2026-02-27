@@ -36,9 +36,21 @@ export const createOrder = createAsyncThunk<
   }
 );
 
-export const getOrder = createAsyncThunk(
+export const getOrder = createAsyncThunk<
+  { data: Order[]; totalPageNum: number },
+  { page?: number },
+  { rejectValue: string }
+>(
   "order/getOrder",
-  async (_, { rejectWithValue, dispatch }) => {}
+  async (query, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await api.get("/orders/me", { params: query });
+      if (response.status !== 200) throw new ApiError(response.data.error);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue("주문 목록을 불러오지 못했습니다. 관리자에 문의하세요.");
+    }
+  }
 );
 
 export const getOrderList = createAsyncThunk<
@@ -129,6 +141,19 @@ const orderSlice = createSlice({
       .addCase(updateOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "주문 정보 수정 오류";
+      })
+      .addCase(getOrder.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.orderList = action.payload.data;
+        state.totalPageNum = action.payload.totalPageNum;
+      })
+      .addCase(getOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "주문 목록 조회 오류";
       });
   },
 });
