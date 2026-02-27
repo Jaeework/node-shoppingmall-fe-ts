@@ -16,6 +16,7 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { orderNum, loading } = useAppSelector((state) => state.order);
   const { cartList, totalPrice, loading: cartLoading } = useAppSelector((state) => state.cart);
+  const [initialOrderNum] = useState(orderNum);
   
   const [cardValue, setCardValue] = useState<CardValue>({
     cvc: "",
@@ -45,8 +46,10 @@ const PaymentPage = () => {
   }, [cartLoading, cartList, navigate]);
 
   useEffect(() => {
-    // 오더번호를 받으면 어디로 갈까?
-  }, [orderNum]);
+    if (orderNum !== "" && orderNum !== initialOrderNum) {
+      navigate("/payment/success");
+    }
+  }, [orderNum, initialOrderNum, navigate]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
