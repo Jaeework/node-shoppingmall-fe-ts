@@ -61,9 +61,27 @@ export const getOrderList = createAsyncThunk<
   }
 );
 
-export const updateOrder = createAsyncThunk(
+export const updateOrder = createAsyncThunk<
+  Order,
+  { id: string, status: string, page?: number, ordernum?: string },
+  { rejectValue: string }
+>(
   "order/updateOrder",
-  async ({ id, status }: { id: string; status: string }, { dispatch, rejectWithValue }) => {}
+  async ({ id, status, page, ordernum }, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await api.put(`orders/${id}`, { status });
+      if (response.status !== 200) throw new ApiError(response.data.error);
+
+      dispatch(getOrderList({page, ordernum}));
+      dispatch(showToastMessage({message: "주문 정보를 성공적으로 수정하였습니다.", status: "success"}));
+      return response.data.data;
+    } catch (error) {
+      if (error instanceof ApiError && error.isUserError) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("주문 정보를 수정하지 못했습니다. 관리자에 문의하세요.");
+    }
+  }
 );
 
 const orderSlice = createSlice({
@@ -99,7 +117,18 @@ const orderSlice = createSlice({
       })
       .addCase(getOrderList.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "주문 목록 조회 에러";
+        state.error = action.payload || "주문 목록 조회 오류";
+      })
+      .addCase(updateOrder.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(updateOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(updateOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "주문 정보 수정 오류";
       });
   },
 });

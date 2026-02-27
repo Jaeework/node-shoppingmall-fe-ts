@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../features/hooks";
 import { ORDER_STATUS } from "../../../constants/order.constants";
 import { updateOrder } from "../../../features/order/orderSlice";
 import { currencyFormat } from "../../../utils/number";
 import Button from "../../../components/ui/atoms/button/Button";
+import ErrorMessage from "../../../components/ui/atoms/error-message/ErrorMessage";
+import { useSearchParams } from "react-router-dom";
 
 interface OrderDetailDialogProps {
   open: boolean;
@@ -12,7 +14,8 @@ interface OrderDetailDialogProps {
 
 const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
   const dispatch = useAppDispatch();
-  const selectedOrder = useAppSelector((state) => state.order.selectedOrder);
+  const [query] = useSearchParams();
+  const { selectedOrder, error } = useAppSelector((state) => state.order);
   const [orderStatus, setOrderStatus] = useState(
     "status" in selectedOrder ? selectedOrder.status : ""
   );
@@ -23,9 +26,14 @@ const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
 
   const submitStatus = () => {
     if ("_id" in selectedOrder) {
-      dispatch(updateOrder({ id: selectedOrder._id, status: orderStatus }));
+      const page = Number(query.get("page")) || 1;
+      const ordernum= query.get("ordernum") || "";
+      dispatch(updateOrder({ id: selectedOrder._id, status: orderStatus, page, ordernum }))
+        .unwrap()
+        .then(() => {
+          handleClose();
+        });
     }
-    handleClose();
   };
 
   if (!open) return null;
@@ -50,6 +58,9 @@ const OrderDetailDialog = ({ open, handleClose }: OrderDetailDialogProps) => {
         </div>
 
         <div className="px-6 py-4">
+          {error && (
+            <ErrorMessage message={error} variant="y2k" className="mb-2" />
+          )}
           <p className="mb-1">
             <span className="font-heading">예약번호:</span>{" "}
             <span className="font-monoplex">
