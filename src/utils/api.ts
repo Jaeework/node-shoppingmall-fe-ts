@@ -18,7 +18,6 @@ api.interceptors.request.use(
     return request;
   },
   (error) => {
-    console.log("REQUEST ERROR", error);
     return Promise.reject(error);
   }
 );
@@ -27,7 +26,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const data = error.response?.data;
-    console.log("RESPONSE ERROR", data ?? error);
     const message = data?.message ?? error.message ?? "알 수 없는 오류";
     const isUserError = data?.isUserError ?? false;
     return Promise.reject(new ApiError(message, isUserError));
