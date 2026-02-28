@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAppDispatch } from "../../../features/hooks";
-import { updateQty, deleteCartItem, toggleCheckItem } from "../../../features/cart/cartSlice";
+import { updateQty, deleteCartItems, toggleCheckItem } from "../../../features/cart/cartSlice";
 import { currencyFormat } from "../../../utils/number";
 import type { CartItem } from "../../../types/index";
 import Button from "../../../components/ui/atoms/button/Button";
@@ -43,7 +43,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, updatingItemId,
   };
 
   const deleteCart = (id: string) => {
-    dispatch(deleteCartItem(id));
+    dispatch(deleteCartItems([id]));
   };
 
   return (
@@ -81,7 +81,7 @@ const CartProductCard: React.FC<CartProductCardProps> = ({ item, updatingItemId,
             variant="ghost"
             size="md"
             onClick={() => deleteCart(item._id)}
-            className="relative z-10 text-gray-400 hover:text-red-500 transition-colors p-1"
+            className="relative z-10 p-1"
           >
             <FontAwesomeIcon icon={faTrashCan} className="text-[var(--y2k-magenta-vivid)]" />
           </Button>

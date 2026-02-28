@@ -60,16 +60,16 @@ export const getCartList = createAsyncThunk<
   }
 );
 
-export const deleteCartItem = createAsyncThunk<
+export const deleteCartItems = createAsyncThunk<
   number,
-  string,
+  string[],
   { rejectValue: string }
 >(
-  "cart/deleteCartItem",
-  async (id: string, { rejectWithValue, dispatch }) => {
+  "cart/deleteCartItems",
+  async (ids: string[], { rejectWithValue, dispatch }) => {
     try {
-      const response = await api.delete(`/cart/${id}`);
-      
+      const response = await api.delete("/cart", { data: { ids } });
+
       dispatch(getCartList());
       return response.data.cartItemQuantity;
     } catch (error) {
@@ -190,15 +190,15 @@ const cartSlice = createSlice({
         state.updatingItemId = null;
         state.error = action.payload || "상품 수량 업데이트 에러";
       })
-      .addCase(deleteCartItem.pending, (state, action) => {
+      .addCase(deleteCartItems.pending, (state, action) => {
         state.loading = true;
       })
-      .addCase(deleteCartItem.fulfilled, (state, action) => {
+      .addCase(deleteCartItems.fulfilled, (state, action) => {
         state.loading = false;
         state.error = "";
         state.cartItemCount = action.payload;
       })
-      .addCase(deleteCartItem.rejected, (state, action) => {
+      .addCase(deleteCartItems.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "카트 상품 삭제 에러";
       })
