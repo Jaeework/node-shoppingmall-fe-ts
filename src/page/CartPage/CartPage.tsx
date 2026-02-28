@@ -20,9 +20,8 @@ const CartPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (cartList.length > 0) {
-      dispatch(setCheckedItems(availableItems));
-    }
+    const newAvailableItems = cartList.filter((item) => item.productId.stock[item.size] > 0);
+    dispatch(setCheckedItems(newAvailableItems));
   }, [cartList, dispatch]);
 
   const handleSelectAll = () => {
