@@ -7,6 +7,7 @@ import type { User } from "../../types/index";
 import Button from "../ui/atoms/button/Button";
 import { useState } from "react";
 import SearchBox from "./SearchBox";
+import Navbar from "./Navbar";
 
 interface HeaderProps {
   user: User | null;
@@ -16,6 +17,7 @@ function Header({ user }: HeaderProps) {
   const navigate = useNavigate();
   const { cartItemCount } = useAppSelector((state) => state.cart);
   const [showSearchBox, setShowSearchBox] = useState(false);
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   
   const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -30,6 +32,7 @@ function Header({ user }: HeaderProps) {
     
   return (
     <header className="w-full max-w-[1500px] mx-auto p-4 pb-5 bg-transparent shrink-0 text-[var(--foreground)] flex flex-col gap-2 relative">
+      <Navbar isOpen={isSideMenuOpen} onClose={() => setIsSideMenuOpen(false)} />
       <div 
         className="w-full flex justify-center items-center overflow-hidden transition-all duration-300"
         style={{
@@ -38,7 +41,7 @@ function Header({ user }: HeaderProps) {
       >
         <SearchBox
           onCheckEnter={onCheckEnter}
-          placeholder="상품 검색"
+          placeholder="Search Items"
           field="name"
         />
         <Button
@@ -63,6 +66,7 @@ function Header({ user }: HeaderProps) {
           icon={faBars}
           className="cursor-pointer text-lg"
           fill="var(--foreground)"
+          onClick={() => setIsSideMenuOpen(true)}
         />
         <div className="flex justify-center gap-2 items-center font-monoplex text-sm">
           {user ? (
@@ -71,7 +75,7 @@ function Header({ user }: HeaderProps) {
               className="flex gap-1 justify-center items-center"
             >
               <FontAwesomeIcon icon={faUser} />
-              <span className="hidden sm:inline text-sm">마이페이지</span>
+              <span className="hidden sm:inline text-sm">MY PAGE</span>
             </Link>
           ) : (
             <Link
@@ -79,12 +83,12 @@ function Header({ user }: HeaderProps) {
               className="flex gap-1 justify-center items-center"
             >
               <FontAwesomeIcon icon={faUser} />
-              <span className="hidden sm:inline text-sm">로그인</span>
+              <span className="hidden sm:inline text-sm">SIGN IN</span>
             </Link>
           )}
           <Link to="/cart" className="relative flex items-center gap-1">
             <FontAwesomeIcon icon={faShoppingBag} />
-            <span className="hidden sm:inline text-sm">장바구니</span>
+            <span className="hidden sm:inline text-sm">BAG</span>
             <span className="text-xs">{`(${cartItemCount ?? 0})`}</span>
           </Link>
           <Button
