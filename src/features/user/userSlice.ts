@@ -10,7 +10,7 @@ import type { User, UserState } from "../../types/index";
 // ─── Thunks ──────────────────────────────────────────────────────────────────
 
 export const loginWithEmail = createAsyncThunk<
-  { user: User; token: string },
+  { user: User },
   { email: string; password: string },
   { rejectValue: string }
 >("user/loginWithEmail", async ({ email, password }, { rejectWithValue }) => {
@@ -30,12 +30,14 @@ export const loginWithEmail = createAsyncThunk<
 });
 
 export const loginWithGoogle = createAsyncThunk<
-  void,
+  { user: User },
   string,
   { rejectValue: string }
 >("user/loginWithGoogle", async (_token, { rejectWithValue }) => {
   try {
-    // Google login placeholder
+    const response = await api.post("/auth/google", {_token});
+    sessionStorage.setItem("token", response.data.token);
+    return response.data;
   } catch (error) {
     return rejectWithValue("Google 로그인에 실패했습니다.");
   }
@@ -151,6 +153,18 @@ const userSlice = createSlice({
       })
       .addCase(loginWithToken.rejected, (state) => {
         state.isInitialized = true;
+      })
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.loginError = "";
+      })
+      .addCase(loginWithGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.loginError = action.payload ?? "로그인 오류";
       });
   },
 });
