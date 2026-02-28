@@ -10,9 +10,10 @@ const LandingPage: React.FC = () => {
   const { productList, loading } = useAppSelector((state) => state.product);
   const [query] = useSearchParams();
   const name = query.get("name") ?? "";
+  const category = query.get("category") ?? "";
 
   useEffect(() => {
-    dispatch(getProductList({ name }));
+    dispatch(getProductList({ name, category }));
   }, [query, dispatch]);
 
   const activeProducts = productList.filter((item) => item.status === "active");
