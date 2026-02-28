@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../../../components/ui/atoms/input/Input";
 import Button from "../../../components/ui/atoms/button/Button";
 import ErrorMessage from "../../../components/ui/atoms/error-message/ErrorMessage";
@@ -135,12 +135,12 @@ function SignUpForm() {
 
         <p className="text-center font-monoplex text-xs text-[var(--foreground)]">
           이미 계정이 있으신가요?{" "}
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="text-gray-600 hover:text-gray-500 underline"
           >
             로그인
-          </a>
+          </Link>
         </p>
       </form>
     </div>
