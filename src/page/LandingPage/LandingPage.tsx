@@ -13,10 +13,8 @@ const LandingPage: React.FC = () => {
   const category = query.get("category") ?? "";
 
   useEffect(() => {
-    dispatch(getProductList({ name, category }));
+    dispatch(getProductList({ name, category, status: "active" }));
   }, [query, dispatch]);
-
-  const activeProducts = productList.filter((item) => item.status === "active");
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -24,9 +22,9 @@ const LandingPage: React.FC = () => {
         <div className="flex justify-center items-center min-h-[400px]">
           <LoaderSpinner />
         </div>
-      ) : activeProducts.length > 0 ? (
+      ) : productList.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in-up">
-          {activeProducts.map((item) => (
+          {productList.map((item) => (
             <ProductCard key={item._id} item={item} />
           ))}
         </div>

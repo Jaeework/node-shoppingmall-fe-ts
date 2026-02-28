@@ -8,11 +8,11 @@ import { ApiError } from "../../utils/ApiError";
 // 비동기 액션 생성
 export const getProductList = createAsyncThunk<
   { data: Product[]; totalPageNum: number },
-  { name?: string; page?: number; category?: string },
+  { name?: string; page?: number; category?: string; status?: string; } | undefined,
   { rejectValue: string }
 >(
   "products/getProductList",
-  async (query: { name?: string; page?: number; category?: string } | undefined, { rejectWithValue }) => {
+  async (query, { rejectWithValue }) => {
     try {
       const response = await api.get("/products", { params: query });
       return response.data;
