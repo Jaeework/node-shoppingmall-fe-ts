@@ -1,17 +1,24 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { getCartList } from "../../features/cart/cartSlice";
+import { getCartList, setCheckedItems } from "../../features/cart/cartSlice";
 import CartProductCard from "./component/CartProductCard";
 import OrderReceipt from "../PaymentPage/component/OrderReceipt";
 import LoaderSpinner from "../../components/ui/atoms/loader-spinner/LoaderSpinner";
 
 const CartPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { cartList, loading, updatingItemId } = useAppSelector((state) => state.cart);
+  const { cartList, loading, updatingItemId, checkedItems } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(getCartList());
   }, []);
+
+  useEffect(() => {
+    if (cartList.length > 0) {
+      const availableItems = cartList.filter((item) => item.productId.stock[item.size] > 0);
+      dispatch(setCheckedItems(availableItems));
+    }
+  }, [cartList, dispatch]);
 
   if (loading && cartList.length === 0) {
     return (
@@ -31,7 +38,11 @@ const CartPage: React.FC = () => {
             <div className="flex flex-col gap-4 animate-fade-in-up">
               {
                 cartList.map((item) => (
-                  <CartProductCard key={item._id} item={item} updatingItemId={updatingItemId} />
+                  <CartProductCard 
+                    key={item._id} 
+                    item={item} updatingItemId={updatingItemId}
+                    isChecked={checkedItems.some((i) => i._id === item._id)}
+                  />
                 ))
               }
             </div>

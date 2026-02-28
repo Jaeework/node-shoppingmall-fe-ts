@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import OrderReceipt from "./component/OrderReceipt";
 import PaymentForm from "./component/PaymentForm";
 import { createOrder } from "../../features/order/orderSlice";
-import { getCartList } from "../../features/cart/cartSlice";
 import type { CardValue } from "../../types";
 import { cc_expires_format, phone_format } from "../../utils/number";
 import Input from "../../components/ui/atoms/input/Input";
@@ -15,7 +14,7 @@ const PaymentPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { orderNum, loading } = useAppSelector((state) => state.order);
-  const { cartList, totalPrice, loading: cartLoading } = useAppSelector((state) => state.cart);
+  const { checkedItems, totalPrice, loading: cartLoading } = useAppSelector((state) => state.cart);
   const [initialOrderNum] = useState(orderNum);
   
   const [cardValue, setCardValue] = useState<CardValue>({
@@ -36,14 +35,10 @@ const PaymentPage = () => {
   });
 
   useEffect(() => {
-    dispatch(getCartList());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (!cartLoading && cartList?.length === 0) {
+    if (!cartLoading && checkedItems?.length === 0) {
       navigate("/cart");
     }
-  }, [cartLoading, cartList, navigate]);
+  }, [cartLoading, checkedItems, navigate]);
 
   useEffect(() => {
     if (orderNum !== "" && orderNum !== initialOrderNum) {
@@ -58,14 +53,12 @@ const PaymentPage = () => {
       totalPrice,
       shipTo: {address, city, zip},
       contact: {firstName, lastName, contact},
-      orderList: cartList.map((item) => {
-        return {
-          productId: item.productId._id,
-          price: item.productId.price,
-          qty: item.qty,
-          size: item.size,
-        };
-      })
+      orderList: checkedItems.map((item) => ({
+        productId: item.productId._id,
+        price: item.productId.price,
+        qty: item.qty,
+        size: item.size,
+      }))
     }));
   };
 

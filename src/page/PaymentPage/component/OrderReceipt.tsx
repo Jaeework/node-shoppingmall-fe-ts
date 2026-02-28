@@ -6,13 +6,13 @@ import { currencyFormat } from "../../../utils/number";
 const OrderReceipt = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartList, totalPrice } = useAppSelector((state) => state.cart);
+  const { totalPrice, checkedItems } = useAppSelector((state) => state.cart);
 
   return (
     <div className="bg-white border border-gray-400 rounded-lg p-6">
       <h3 className="text-xl font-bold mb-4 font-monoplex">주문 내역</h3>
       <ul>
-        {cartList.map((item, index) => (
+        {checkedItems.map((item, index) => (
           <li key={index} className="flex justify-between py-2 border-b text-sm">
             <div className="font-monoplex text-xs">
               {item.productId.name}{" "}
@@ -35,7 +35,7 @@ const OrderReceipt = () => {
         확인되지 않습니다. 30일의 반품 가능 기간, 반품 수수료 및 미수취시
         발생하는 추가 배송 요금 읽어보기 반품 및 환불
       </p>
-      {location.pathname.includes("/cart") && cartList.length > 0 && (
+      {location.pathname.includes("/cart") && checkedItems.length > 0 && (
         <Button
           type="button"
           variant="purple-gradient"
@@ -45,7 +45,7 @@ const OrderReceipt = () => {
           className="text-white font-heading mt-4"
           onClick={() => navigate("/payment")}
         >
-          CHECK OUT NOW
+          CHECK OUT NOW{checkedItems.length > 0 && ` (${checkedItems.length})`}
         </Button>
       )}
     </div>

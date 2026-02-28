@@ -12,6 +12,7 @@ const initialState: CartState = {
   cartItemCount: 0,
   totalPrice: 0,
   updatingItemId: null,
+  checkedItems: [],
 };
 
 // Async thunk actions
@@ -134,6 +135,24 @@ const cartSlice = createSlice({
     initialCart(state) {
       state.cartItemCount = 0;
     },
+    toggleCheckItem(state, action: PayloadAction<CartItem>) {
+      const item = action.payload;
+      const index = state.checkedItems.findIndex((i) => i._id === item._id);
+      if (index >= 0) {
+        state.checkedItems.splice(index, 1);
+      } else {
+        state.checkedItems.push(item);
+      }
+      state.totalPrice = state.checkedItems.reduce(
+        (total, i) => total + i.productId.price * i.qty, 0
+      );
+    },
+    setCheckedItems(state, action: PayloadAction<CartItem[]>) {
+      state.checkedItems = action.payload;
+      state.totalPrice = state.checkedItems.reduce(
+        (total, i) => total + i.productId.price * i.qty, 0
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -156,7 +175,6 @@ const cartSlice = createSlice({
         state.loading = false;
         state.error = "";
         state.cartList = action.payload;
-        state.totalPrice = action.payload.reduce((total, item) => total + (item.productId.price * item.qty), 0);
       })
       .addCase(getCartList.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.loading = false;
@@ -171,7 +189,6 @@ const cartSlice = createSlice({
         state.updatingItemId = null;
         state.error = "";
         state.cartList = action.payload;
-        state.totalPrice = action.payload.reduce((total, item) => total + (item.productId.price * item.qty), 0);
       })
       .addCase(updateQty.rejected, (state, action) => {
         state.loading = false;
@@ -196,5 +213,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { initialCart } = cartSlice.actions;
+export const { initialCart, toggleCheckItem, setCheckedItems } = cartSlice.actions;
 export default cartSlice.reducer;

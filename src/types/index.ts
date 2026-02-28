@@ -95,6 +95,7 @@ export interface CartState {
   cartItemCount: number;
   totalPrice: number;
   updatingItemId: string | null;
+  checkedItems: CartItem[];
 }
 
 export interface OrderState {
