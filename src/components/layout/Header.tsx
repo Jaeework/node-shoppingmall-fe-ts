@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faClose, faSearch, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
@@ -15,18 +15,21 @@ interface HeaderProps {
 
 function Header({ user }: HeaderProps) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { cartItemCount } = useAppSelector((state) => state.cart);
   const [showSearchBox, setShowSearchBox] = useState(false);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
-  
+
   const onCheckEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       const val = event.currentTarget.value;
-      if (val === "") {
-        navigate("/");
-      } else {
-        navigate(`/?name=${val}`);
-      }
+      const category = searchParams.get("category");
+
+      const params = new URLSearchParams();
+      if (val) params.set("name", val);
+      if (category) params.set("category", category);
+
+      navigate(`/?${params.toString()}`);
     }
   };
     
