@@ -25,7 +25,7 @@ export const createOrder = createAsyncThunk<
   async (payload, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post("/orders", payload);
-      if (response.status !== 200) throw new ApiError(response.data.error);
+      
       dispatch(getCartQty());
       return response.data.orderNum;
     } catch (error) {
@@ -45,7 +45,6 @@ export const getOrder = createAsyncThunk<
   async (query, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.get("/orders/me", { params: query });
-      if (response.status !== 200) throw new ApiError(response.data.error);
       return response.data;
     } catch (error) {
       return rejectWithValue("주문 목록을 불러오지 못했습니다. 관리자에 문의하세요.");
@@ -62,7 +61,6 @@ export const getOrderList = createAsyncThunk<
   async (query, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.get("/orders", { params: query });
-      if (response.status !== 200) throw new ApiError(response.data.error);
       return response.data;
     } catch (error) {
       if (error instanceof ApiError && error.isUserError) {
@@ -82,8 +80,7 @@ export const updateOrder = createAsyncThunk<
   async ({ id, status, page, ordernum }, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.put(`orders/${id}`, { status });
-      if (response.status !== 200) throw new ApiError(response.data.error);
-
+      
       dispatch(getOrderList({page, ordernum}));
       dispatch(showToastMessage({message: "주문 정보를 성공적으로 수정하였습니다.", status: "success"}));
       return response.data.data;

@@ -15,7 +15,6 @@ export const getProductList = createAsyncThunk<
   async (query: { name?: string; page?: number } | undefined, { rejectWithValue }) => {
     try {
       const response = await api.get("/products", { params: query });
-      if (response.status !== 200) throw new ApiError(response.data.error);
       return response.data;
     } catch (error) {
       if (error instanceof ApiError && error.isUserError) {
@@ -35,7 +34,6 @@ export const getProductDetail = createAsyncThunk<
   async (id: string, { rejectWithValue }) => {
     try {
       const response = await api.get(`/products/${id}`);
-      if (response.status !== 200) throw new ApiError(response.data.error);
       return response.data.data;
     } catch (error) {
       if (error instanceof ApiError && error.isUserError) {
@@ -55,9 +53,7 @@ export const createProduct = createAsyncThunk<
   async (formData: Partial<Product>, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post("/products", formData);
-      if (response.status !== 200) {
-        throw new ApiError(response.data.error);
-      }
+      
       dispatch(getProductList({ page: 1 }));
       dispatch(showToastMessage({ message: "상품 등록이 완료되었습니다.", status: "success" }));
       return response.data;
@@ -79,12 +75,9 @@ export const deleteProduct = createAsyncThunk<
   async (id: string, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.delete(`/products/${id}`);
-      if (response.status !== 200) {
-        throw new ApiError(response.data.error);
-      }
+      
       dispatch(getProductList({ page: 1 }));
       dispatch(showToastMessage({ message: "상품을 삭제하였습니다.", status: "success" }));
-
       return response.data.data;
     } catch (error) {
       const errorMessage = error instanceof ApiError ? error.message : "상품을 삭제하지 못했습니다. 관리자에 문의하세요.";
@@ -104,7 +97,7 @@ export const editProduct = createAsyncThunk<
   async ({ id, ...formData } , { dispatch, rejectWithValue }) => {
     try {
       const response = await api.put(`/products/${id}`, formData);
-      if (response.status !== 200) throw new ApiError(response.data.error);
+      
       dispatch(getProductList({ page: 1 }));
       dispatch(showToastMessage({ message: "상품 정보가 수정되었습니다.", status: "success"}));
       return response.data.data;
